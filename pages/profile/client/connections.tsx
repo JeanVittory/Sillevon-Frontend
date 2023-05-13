@@ -246,7 +246,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     if (token) {
       const res = await fetch(
-        `${process.env.HEROKU_BACKEND_URI}/api/users/datauser`,
+        process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string,
         {
           method: 'GET',
           headers: {

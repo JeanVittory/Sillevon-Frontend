@@ -12,67 +12,61 @@ const stripePromise = loadStripe(stipeSecretKey);
 type Appearance = { theme: 'stripe' | 'flat' };
 
 export default function Payment({ contracts }: any) {
-  const [clientSecret, setClientSecret] = useState('');
-  const token = Cookies.get('sillusr');
+	const [clientSecret, setClientSecret] = useState('');
+	const token = Cookies.get('sillusr');
 
-  useEffect(() => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_HEROKU_BACKEND_URI}/api/contracts/create-payment-intent`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ contracts }),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+	useEffect(() => {
+		fetch(process.env.NEXT_PUBLIC_POST_PAYMENT as string, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ contracts }),
+		})
+			.then((res) => res.json())
+			.then((data) => setClientSecret(data.clientSecret));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-  const appearance: Appearance = {
-    theme: 'flat',
-  };
-  const options = {
-    clientSecret,
-    appearance,
-  };
+	const appearance: Appearance = {
+		theme: 'flat',
+	};
+	const options = {
+		clientSecret,
+		appearance,
+	};
 
-  return (
-    <div className={styles.paymentContainer}>
-      {clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
-      )}
-    </div>
-  );
+	return (
+		<div className={styles.paymentContainer}>
+			{clientSecret && (
+				<Elements options={options} stripe={stripePromise}>
+					<CheckoutForm />
+				</Elements>
+			)}
+		</div>
+	);
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const token = context.req.cookies['sillusr'];
-  const { name } = context.query;
-  let contracts;
-  try {
-    const res = await fetch(
-      `${process.env.HEROKU_BACKEND_URI}/api/contracts/by-name/${name}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: 'no-store',
-      }
-    );
-    contracts = await res.json();
-  } catch (e) {
-    contracts = { data: 'There are not contracts' };
-  }
-  return {
-    props: {
-      contracts: contracts.data,
-    },
-  };
+	const token = context.req.cookies['sillusr'];
+	const { name } = context.query;
+	let contracts;
+	try {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_GET_BY_NAME}/${name}`, {
+			method: 'GET',
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+			cache: 'no-store',
+		});
+		contracts = await res.json();
+	} catch (e) {
+		contracts = { data: 'There are not contracts' };
+	}
+	return {
+		props: {
+			contracts: contracts.data,
+		},
+	};
 };
