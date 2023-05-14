@@ -1,13 +1,16 @@
+import { useState } from 'react';
 import { Button, Center, Text } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import axios from 'axios';
 import { setImages, setOtherData } from '../slices/userSlice';
+import { Loader } from './Loader';
 import Cookies from 'js-cookie';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconBug } from '@tabler/icons';
 import { useRouter } from 'next/router';
 
 export default function StepperDone() {
+	const [isLoading, setIsLoading] = useState(false);
 	const {
 		email,
 		avatar,
@@ -31,6 +34,7 @@ export default function StepperDone() {
 		data.append('avatar', avatar as string | Blob, avatar?.name);
 		data.append('background', background as string | Blob, background?.name);
 		try {
+			setIsLoading(true);
 			const resFormData = await axios.post(
 				process.env.NEXT_PUBLIC_POST_UPDATE_PHOTOS as string,
 				data,
@@ -79,8 +83,10 @@ export default function StepperDone() {
 				icon: <IconCheck size={16} />,
 				autoClose: 4000,
 			});
+			setIsLoading(false);
 			router.push('/');
 		} catch (e) {
+			setIsLoading(false);
 			showNotification({
 				id: 'load-data-user',
 				color: 'red',
@@ -108,7 +114,7 @@ export default function StepperDone() {
 				</Text>
 			</Center>
 			<Center>
-				<Button onClick={handleClick}>Next</Button>
+				<Button onClick={handleClick}>{isLoading ? <Loader /> : 'Next'}</Button>
 			</Center>
 		</div>
 	);
