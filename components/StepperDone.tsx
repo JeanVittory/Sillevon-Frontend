@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconBug } from '@tabler/icons';
 import { useRouter } from 'next/router';
+import styles from '../styles/StepperDone.module.scss';
 
 export default function StepperDone() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -106,9 +107,10 @@ export default function StepperDone() {
 					align='center'
 					variant='gradient'
 					gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
-					size={60}
+					size={40}
 					weight={700}
 					style={{ fontFamily: 'Greycliff CF, sans-serif' }}
+					className={styles.stepperDone__title}
 				>
 					Your done! Click next to continue
 				</Text>
