@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useToggle, upperFirst } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
+import { Loader } from './Loader';
 import {
 	TextInput,
 	PasswordInput,
@@ -33,6 +35,7 @@ interface UserValues {
 }
 
 const Login = ({ closeAllModals }: LoginProps) => {
+	const [isLoading, setIsLoading] = useState(false);
 	const { loginWithRedirect } = useAuth0();
 	const dispatch = useAppDispatch();
 	const [type, toggle] = useToggle(['login', 'register']);
@@ -55,6 +58,7 @@ const Login = ({ closeAllModals }: LoginProps) => {
 	const handleSubmit = async (values: UserValues) => {
 		if (type === 'register') {
 			try {
+				setIsLoading(true);
 				const res = await axios.post(process.env.NEXT_PUBLIC_POST_LOCAL_SIGNUP as string, values);
 				dispatch(
 					addUserData({
@@ -87,6 +91,8 @@ const Login = ({ closeAllModals }: LoginProps) => {
 					icon: <IconCheck size={16} />,
 					autoClose: 4000,
 				});
+				setIsLoading(false);
+				closeAllModals();
 				router.push('/register-stepper');
 			} catch (e) {
 				showNotification({
@@ -97,9 +103,12 @@ const Login = ({ closeAllModals }: LoginProps) => {
 					icon: <IconBug size={16} />,
 					autoClose: 4000,
 				});
+				setIsLoading(false);
+				closeAllModals();
 			}
 		} else {
 			try {
+				setIsLoading(true);
 				const res = await axios.post(process.env.NEXT_PUBLIC_POST_LOCAL_SIGNIN as string, values);
 				Cookies.remove('auth0');
 				Cookies.set('auth0', 'false');
@@ -131,8 +140,10 @@ const Login = ({ closeAllModals }: LoginProps) => {
 					icon: <IconCheck size={16} />,
 					autoClose: 4000,
 				});
-				router.push('/');
 				dispatch(setLogged({ isLogged: true }));
+				setIsLoading(false);
+				closeAllModals();
+				router.push('/');
 			} catch (e) {
 				showNotification({
 					id: 'load-data-user',
@@ -142,6 +153,8 @@ const Login = ({ closeAllModals }: LoginProps) => {
 					icon: <IconBug size={16} />,
 					autoClose: 4000,
 				});
+				closeAllModals();
+				setIsLoading(false);
 			}
 		}
 	};
@@ -177,7 +190,6 @@ const Login = ({ closeAllModals }: LoginProps) => {
 
 			<form
 				onSubmit={form.onSubmit((values) => {
-					closeAllModals();
 					handleSubmit(values);
 				})}
 			>
@@ -223,7 +235,7 @@ const Login = ({ closeAllModals }: LoginProps) => {
 					<Anchor component='button' type='button' color='dimmed' onClick={() => toggle()} size='xs'>
 						{type === 'register' ? 'Already have an account? Login' : "Don't have an account? Register"}
 					</Anchor>
-					<Button type='submit'>{upperFirst(type)}</Button>
+					<Button type='submit'>{isLoading ? <Loader /> : upperFirst(type)}</Button>
 				</Group>
 			</form>
 		</Paper>

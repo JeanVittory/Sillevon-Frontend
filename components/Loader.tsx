@@ -1,7 +1,8 @@
 import { Bars } from 'react-loader-spinner';
+import styles from '../styles/Loader.module.scss';
 
 export const Loader = () => (
-	<div className='loading'>
-		<Bars color='#fffff' width={25} height={25} />
+	<div className={styles.loader}>
+		<Bars color='#ffffff' width={15} height={15} />
 	</div>
 );
