@@ -1,7 +1,7 @@
 import { createStyles } from '@mantine/core';
 
-export const useClientProfile = createStyles((theme, _params, getRef) => {
-	const icon = getRef('icon');
+export const useClientProfile = createStyles((theme, _params) => {
+	const icon = 'icon';
 	return {
 		navContainer: {
 			zIndex: 0,

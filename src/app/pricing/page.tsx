@@ -1,9 +1,12 @@
-import { GetServerSideProps } from 'next';
-import Layout from '../../components/Layout';
-import { Text, SegmentedControl } from '@mantine/core';
-import styles from '../styles/Pricing.module.scss';
+'use client';
+
 import { useState } from 'react';
+import { Text, SegmentedControl } from '@mantine/core';
+import Layout from '../../components/Layout';
 import { PricingCard } from '../../components/PricingCard';
+import { Loader } from '../../components/Loader';
+import usePricing from './services/pricing';
+import styles from '../../styles/Pricing.module.scss';
 
 type Plan = {
 	title: string;
@@ -21,68 +24,57 @@ interface PricingProps {
 	monthly: Plan;
 }
 
-const Pricing = ({ yearly, monthly }: PricingProps) => {
+const Pricing = () => {
 	const [billing, setBilling] = useState('monthly');
-
-	const monthlyToRender = monthly.map((plan, i) => (
+	const { data, isLoading } = usePricing() as { data: PricingProps; isLoading: boolean };
+	if (isLoading)
+		return (
+			<div className={styles.loaderContainer}>
+				<Loader />
+			</div>
+		);
+	const monthlyToRender = data.monthly.map((plan, i) => (
 		<PricingCard key={`${plan._id}monthly${i}`} plan={plan} />
 	));
-	const yearlyToRender = yearly.map((plan, i) => (
+	const yearlyToRender = data.yearly.map((plan, i) => (
 		<PricingCard key={`${plan._id}yearly${i + 1}`} plan={plan} />
 	));
 
 	return (
-		<Layout title='Sillevon | Pricing'>
-			<div className={styles.pricing}>
-				<div className={styles.title}>
-					<Text
-						component='span'
-						align='center'
-						variant='gradient'
-						gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
-						size={60}
-						weight={700}
-						style={{ fontFamily: 'Greycliff CF, sans-serif' }}
-					>
-						Pricing plans
-					</Text>
-				</div>
-				<div className={styles.description}>
-					<Text>
-						If you have a bussines and you want live music in your place, those plans are for you!
-					</Text>
-				</div>
-				<SegmentedControl
-					className={styles.segmented}
-					size='lg'
-					value={billing}
-					onChange={setBilling}
-					data={[
-						{ label: 'Monthly billing', value: 'monthly' },
-						{ label: 'Yearly billing', value: 'yearly' },
-					]}
-				/>
-				<div className={styles.cardsContainer}>
-					{billing === 'monthly' ? monthlyToRender : yearlyToRender}
-				</div>
+		<div className={styles.pricing}>
+			<div className={styles.title}>
+				<Text
+					component='span'
+					align='center'
+					variant='gradient'
+					gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
+					size={60}
+					weight={700}
+					style={{ fontFamily: 'Greycliff CF, sans-serif' }}
+				>
+					Pricing plans
+				</Text>
 			</div>
-		</Layout>
+			<div className={styles.description}>
+				<Text>
+					If you have a bussines and you want live music in your place, those plans are for you!
+				</Text>
+			</div>
+			<SegmentedControl
+				className={styles.segmented}
+				size='md'
+				value={billing}
+				onChange={setBilling}
+				data={[
+					{ label: 'Monthly billing', value: 'monthly' },
+					{ label: 'Yearly billing', value: 'yearly' },
+				]}
+			/>
+			<div className={styles.cardsContainer}>
+				{billing === 'monthly' ? monthlyToRender : yearlyToRender}
+			</div>
+		</div>
 	);
 };
 
 export default Pricing;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-	const res = await fetch(process.env.NEXT_PUBLIC_GET_PLANS as string, {
-		method: 'GET',
-	});
-	const plans = await res.json();
-	const yearly = plans.data.filter((plan: any) => plan.billing === 'yearly').reverse();
-	const monthly = plans.data.filter((plan: any) => plan.billing === 'monthly').reverse();
-	return {
-		props: {
-			yearly,
-			monthly,
-		},
-	};
-};

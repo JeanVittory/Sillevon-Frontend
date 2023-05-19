@@ -4,7 +4,6 @@ import Posts from '../../../components/Posts';
 import UserStats from '../../../components/UserStats';
 import Map from '../../../components/Map';
 import { UserCardProfile } from '../../../components/UserCardProfile';
-import { GetServerSideProps } from 'next';
 import { Center, Text } from '@mantine/core';
 import { useAppDispatch } from '../../../hooks/redux';
 import { setAvatar } from '../../../slices/userSlice';
@@ -93,19 +92,19 @@ export default function ArtistsProfile({ user }: ArtistsProfileProps) {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const token = context.req.cookies['sillusr'];
-	let userData;
-	if (token) {
-		const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-		userData = await res.json();
-	}
-	return {
-		props: { user: userData.data },
-	};
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+// 	const token = context.req.cookies['sillusr'];
+// 	let userData;
+// 	if (token) {
+// 		const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
+// 			method: 'GET',
+// 			headers: {
+// 				Authorization: `Bearer ${token}`,
+// 			},
+// 		});
+// 		userData = await res.json();
+// 	}
+// 	return {
+// 		props: { user: userData.data },
+// 	};
+// };

@@ -22,7 +22,6 @@ interface PricingCardProps {
 }
 
 export function PricingCard({ plan }: PricingCardProps) {
-	console.log('hello');
 	const { classes } = usePricingCardStyles();
 	const router = useRouter();
 	const features = plan.features.map((feature) => (
@@ -88,15 +87,15 @@ export function PricingCard({ plan }: PricingCardProps) {
 				align='center'
 				variant='gradient'
 				gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
-				size={50}
+				size={35}
 				weight={500}
 				style={{ fontFamily: 'Greycliff CF, sans-serif' }}
 			>
 				{plan.title.toUpperCase()}
 			</Text>
 
-			<Group position='apart' mt='md'>
-				<Text align='center' weight={400}>
+			<Group position='center' mt='md'>
+				<Text align='center' weight={400} size='sm'>
 					{plan.description}
 				</Text>
 			</Group>

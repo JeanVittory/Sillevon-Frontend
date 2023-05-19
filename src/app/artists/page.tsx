@@ -1,61 +1,77 @@
-import { GetServerSideProps } from 'next';
-import Layout from '../../components/Layout';
-import MusicianCarousel from '../../components/MusicianCarousel';
-import styles from '../../styles/Artists.module.scss';
-import { SearcherBar } from '../../components/SearcherBar';
-import { ArtistsTable } from '../../components/ArtistsTable';
+'use client';
+
 import { useEffect, useLayoutEffect, useState } from 'react';
 import axios from 'axios';
-import { IconBug, IconDisc, IconEar, IconTag } from '@tabler/icons';
-import { showNotification } from '@mantine/notifications';
 import { ActionIcon, Button, Tooltip } from '@mantine/core';
 import { openModal, closeAllModals } from '@mantine/modals';
+import { showNotification } from '@mantine/notifications';
+import { ArtistsTable } from '../../components/ArtistsTable';
+import { IconBug, IconDisc, IconEar, IconTag } from '@tabler/icons-react';
+import { SearcherBar } from '../../components/SearcherBar';
 import ModalFilterGenre from '../../components/ModalFilterGenre';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { setSliceCity } from '../../slices/searchSlice';
+import MusicianCarousel from '../../components/MusicianCarousel';
 import { ModalFilterPrice } from '../../components/ModalFilterPrice';
 import ModalFilterInstrument from '../../components/ModalFilterInstrument';
 import { Pagination } from '../../components/Pagination';
+import { Loader } from '../../components/Loader';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { setSliceCity } from '../../slices/searchSlice';
+import { artistsService, artistsRecomendedService } from './services/artists';
+import styles from '../../styles/Artists.module.scss';
 
 interface ArtistsProps {
 	nextPage: boolean;
 	prevPage: boolean;
 	max: number;
-	artistsList: {
-		imagesDone: {
-			avatar: string;
-		};
-		name: string;
-		email: string;
-		mode: string;
-		instrument?: string;
-		genre?: string;
-		price: number;
-	}[];
-	artistsRecomended: {
-		imagesDone: {
-			avatar: string;
-		};
-		name: string;
-		email: string;
-		mode: string;
-		instrument?: string;
-		genre?: string;
-		price: number;
-	}[];
+	artistsList: ArtistsList;
+	artistsRecomended: artistsRecomended;
 }
 
-const Artists = ({ artistsList, artistsRecomended, nextPage, max, prevPage }: ArtistsProps) => {
+type artistsRecomended = {
+	imagesDone: {
+		avatar: string;
+	};
+	name: string;
+	email: string;
+	mode: string;
+	instrument?: string;
+	genre?: string;
+	price: number;
+}[];
+
+type ArtistsList = {
+	imagesDone: {
+		avatar: string;
+	};
+	name: string;
+	email: string;
+	mode: string;
+	instrument?: string;
+	genre?: string;
+	price: number;
+}[];
+
+const Artists = () => {
 	const [iconLoading, setIconLoading] = useState<boolean>(false);
-	const [artistListFiltered, setArtistListFiltered] = useState(artistsList);
-	const [artistsRecomendedFiltered, setArtistsRecomendedFiltered] = useState(artistsRecomended);
+	const [artistListFiltered, setArtistListFiltered] = useState<ArtistsList>();
+	const [artistsRecomendedFiltered, setArtistsRecomendedFiltered] = useState<artistsRecomended>();
 	const [city, setCity] = useState<string>('');
 	const dispatch = useAppDispatch();
 	const search = useAppSelector((state) => state.search);
 	const [pagination, setPagination] = useState<number | undefined>(1);
-	const [hasNextPage, setHasNextPage] = useState<boolean>(nextPage);
-	const [hasPrevPage, setHasPrevPage] = useState<boolean>(prevPage);
+	const [hasNextPage, setHasNextPage] = useState<boolean>();
+	const [max, setMax] = useState<number>();
+	const [hasPrevPage, setHasPrevPage] = useState<boolean>();
 	const [isHidde, setIsHidde] = useState<boolean>(false);
+
+	useEffect(() => {
+		artistsService().then(({ artistsList, nextPage, prevPage, max }: any) => {
+			setArtistListFiltered(artistsList);
+			setHasNextPage(nextPage);
+			setHasPrevPage(prevPage);
+			setMax(max);
+		});
+	}, []);
 
 	useLayoutEffect(() => {
 		dispatch(setSliceCity({ city }));
@@ -96,15 +112,16 @@ const Artists = ({ artistsList, artistsRecomended, nextPage, max, prevPage }: Ar
 		try {
 			setIconLoading(true);
 			const resRecomended = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_ARTIST_INITIAL_DATA}?limit=5&page=1&city=${city}&genre=${search.genre}&price=${search.instrument}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&city=${city}&genre=${search.genre}&price=${search.instrument}&instrument=${search.instrument}`
 			);
+			console.log(resRecomended)
 			if (resRecomended.data.data.docs.length > 0) {
 				setArtistsRecomendedFiltered(resRecomended.data.data.docs);
 			} else {
 				throw new Error('There are not artist in this location');
 			}
 			const resList = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_ARTIST_INITIAL_DATA}?limit=10&page=1&city=${city}&genre=${search.genre}&price=${search.instrument}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&city=${city}&genre=${search.genre}&price=${search.instrument}&instrument=${search.instrument}`
 			);
 			if (resList.data.data.docs.length > 0) {
 				setArtistListFiltered(resList.data.data.docs);
@@ -126,134 +143,97 @@ const Artists = ({ artistsList, artistsRecomended, nextPage, max, prevPage }: Ar
 	}
 
 	return (
-		<Layout title='Sillevon | Artists'>
-			<section className={styles.artistsContainer}>
-				<div className={styles.headerArtists}>
-					<h1>Search for your dream band/artists</h1>
-					<div className={styles.searcherBar}>
-						<SearcherBar
-							city={city}
-							setCity={setCity}
-							iconLoading={iconLoading}
-							filteredArtist={filteredArtist}
-						/>
-					</div>
-					<div className={styles.filterSection}>
-						<Tooltip label='Genre'>
-							<ActionIcon
-								variant='outline'
-								onClick={() => {
-									openModal({
-										title: 'Fiter by genre',
-										children: (
-											<ModalFilterGenre
-												setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
-												setArtistListFiltered={setArtistListFiltered}
-												closeAllModals={closeAllModals}
-											/>
-										),
-									});
-								}}
-							>
-								<IconEar />
-							</ActionIcon>
-						</Tooltip>
-						<Tooltip label='Instrument'>
-							<ActionIcon
-								variant='outline'
-								onClick={() => {
-									openModal({
-										title: 'Filter by instrument',
-										children: (
-											<ModalFilterInstrument
-												setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
-												setArtistListFiltered={setArtistListFiltered}
-												closeAllModals={closeAllModals}
-											/>
-										),
-									});
-								}}
-							>
-								<IconDisc />
-							</ActionIcon>
-						</Tooltip>
-						<Tooltip label='Price'>
-							<ActionIcon
-								variant='outline'
-								onClick={() => {
-									openModal({
-										title: 'Filter by range of price',
-										children: (
-											<ModalFilterPrice
-												setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
-												setArtistListFiltered={setArtistListFiltered}
-												closeAllModals={closeAllModals}
-											/>
-										),
-									});
-								}}
-							>
-								<IconTag />
-							</ActionIcon>
-						</Tooltip>
-					</div>
+		<section className={styles.artistsContainer}>
+			<div className={styles.headerArtists}>
+				<h1>Search for your dream band/artists</h1>
+				<div className={styles.searcherBar}>
+					<SearcherBar
+						city={city}
+						setCity={setCity}
+						iconLoading={iconLoading}
+						filteredArtist={filteredArtist}
+					/>
 				</div>
-				<div className={styles.carousel}>
-					<div className={styles.carouselNav}>
-						{!isHidde ? <p>Artists recomended</p> : <p>List of artists</p>}
-						<Button variant='subtle' onClick={() => setIsHidde((prev) => !prev)}>
-							{isHidde ? 'Show' : 'Hide'}
-						</Button>
-					</div>
-					{!isHidde && <MusicianCarousel data={artistsRecomendedFiltered} />}
+				<div className={styles.filterSection}>
+					<Tooltip label='Genre'>
+						<ActionIcon
+							variant='outline'
+							onClick={() => {
+								openModal({
+									title: 'Fiter by genre',
+									className: `${styles.modalGenre}`,
+									children: (
+										<ModalFilterGenre
+											setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
+											setArtistListFiltered={setArtistListFiltered}
+											closeAllModals={closeAllModals}
+										/>
+									),
+								});
+							}}
+						>
+							<IconEar />
+						</ActionIcon>
+					</Tooltip>
+					<Tooltip label='Instrument'>
+						<ActionIcon
+							variant='outline'
+							onClick={() => {
+								openModal({
+									title: 'Filter by instrument',
+									children: (
+										<ModalFilterInstrument
+											setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
+											setArtistListFiltered={setArtistListFiltered}
+											closeAllModals={closeAllModals}
+										/>
+									),
+								});
+							}}
+						>
+							<IconDisc />
+						</ActionIcon>
+					</Tooltip>
+					<Tooltip label='Price'>
+						<ActionIcon
+							variant='outline'
+							onClick={() => {
+								openModal({
+									title: 'Filter by range of price',
+									children: (
+										<ModalFilterPrice
+											setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
+											setArtistListFiltered={setArtistListFiltered}
+											closeAllModals={closeAllModals}
+										/>
+									),
+								});
+							}}
+						>
+							<IconTag />
+						</ActionIcon>
+					</Tooltip>
 				</div>
-				<div className={styles.bundleArtists}>
-					<ArtistsTable data={artistListFiltered} />
+			</div>
+			<div className={styles.carousel}>
+				<div className={styles.carouselNav}>
+					{!isHidde ? <p>Artists recomended</p> : <p>List of artists</p>}
+					<Button variant='subtle' onClick={() => setIsHidde((prev) => !prev)}>
+						{isHidde ? 'Show' : 'Hide'}
+					</Button>
 				</div>
-				<div className={styles.pagination}>
-					<Pagination pagination={pagination} max={max} setPagination={setPagination} />
-				</div>
-			</section>
-		</Layout>
+				{artistsRecomendedFiltered
+					? !isHidde && <MusicianCarousel data={artistsRecomendedFiltered as artistsRecomended} />
+					: null}
+			</div>
+			<div className={styles.bundleArtists}>
+				{artistListFiltered && <ArtistsTable data={artistListFiltered as artistsRecomended} />}
+			</div>
+			<div className={styles.pagination}>
+				<Pagination pagination={pagination} max={max} setPagination={setPagination} />
+			</div>
+		</section>
 	);
 };
 
 export default Artists;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-	try {
-		const resCarousel = await fetch(process.env.NEXT_PUBLIC_GET_ARTIST_RECOMMENDED as string, {
-			method: 'GET',
-		});
-		const artistsRecomended = await resCarousel.json();
-		const toFront = [];
-		const filtered = artistsRecomended.data.sort(
-			(a: any, b: any) => b.connections.length - a.connections.length
-		);
-		if (filtered.length > 0) {
-			for (let i = 0; i < 5; i++) {
-				const element = filtered[i];
-				toFront.push(element);
-			}
-		}
-		const resList = await fetch(
-			`${process.env.NEXT_PUBLIC_GET_ARTIST_INITIAL_DATA}?limit=10&page=1`,
-			{
-				method: 'GET',
-			}
-		);
-		const artistsList = await resList.json();
-		return {
-			props: {
-				max: artistsList.data.totalPages,
-				prevPage: artistsList.data.hasPrevPage,
-				nextPage: artistsList.data.hasNextPage,
-				artistsList: artistsList.data.docs,
-				artistsRecomended: toFront,
-			},
-		};
-	} catch (error: any) {
-		console.log(error);
-		return error;
-	}
-};

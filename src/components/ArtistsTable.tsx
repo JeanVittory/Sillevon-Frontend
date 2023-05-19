@@ -87,7 +87,7 @@ export function ArtistsTable({ data }: UsersStackProps) {
 
 	return (
 		<ScrollArea>
-			<Table sx={{ minWidth: 800 }} verticalSpacing='md'>
+			<Table verticalSpacing='md'>
 				<tbody>{rows}</tbody>
 			</Table>
 		</ScrollArea>
