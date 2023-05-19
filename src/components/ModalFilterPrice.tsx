@@ -8,41 +8,41 @@ import axios from 'axios';
 import { IconBug } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
 
-interface ModalFilterPriceProps {
-	closeAllModals: (payload_0?: undefined) => void;
-	setArtistsRecomendedFiltered: Dispatch<
-		SetStateAction<
-			{
-				imagesDone: {
-					avatar: string;
-				};
-				name: string;
-				email: string;
-				mode: string;
-				price: number;
-			}[]
-		>
-	>;
-	setArtistListFiltered: Dispatch<
-		SetStateAction<
-			{
-				imagesDone: {
-					avatar: string;
-				};
-				name: string;
-				email: string;
-				mode: string;
-				price: number;
-			}[]
-		>
-	>;
-}
+// interface ModalFilterPriceProps {
+// 	closeAllModals: (payload_0?: undefined) => void;
+// 	setArtistsRecomendedFiltered: Dispatch<
+// 		SetStateAction<
+// 			{
+// 				imagesDone: {
+// 					avatar: string;
+// 				};
+// 				name: string;
+// 				email: string;
+// 				mode: string;
+// 				price: number;
+// 			}[]
+// 		>
+// 	>;
+// 	setArtistListFiltered: Dispatch<
+// 		SetStateAction<
+// 			{
+// 				imagesDone: {
+// 					avatar: string;
+// 				};
+// 				name: string;
+// 				email: string;
+// 				mode: string;
+// 				price: number;
+// 			}[]
+// 		>
+// 	>;
+// }
 
 export function ModalFilterPrice({
 	setArtistsRecomendedFiltered,
 	setArtistListFiltered,
 	closeAllModals,
-}: ModalFilterPriceProps) {
+}: any) {
 	const [rangeValue, setRangeValue] = useState<[number, number]>([10, 30]);
 	const dispatch = useAppDispatch();
 	const search = useAppSelector((state) => state.search);

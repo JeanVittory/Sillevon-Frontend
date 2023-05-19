@@ -6,44 +6,13 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { setSliceInstrument } from '../slices/searchSlice';
 import { IconBug } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { Dispatch, SetStateAction } from 'react';
 import axios from 'axios';
-
-interface ModalFilterInstrumentProps {
-	closeAllModals: (payload_0?: undefined) => void;
-	setArtistsRecomendedFiltered: Dispatch<
-		SetStateAction<
-			{
-				imagesDone: {
-					avatar: string;
-				};
-				name: string;
-				email: string;
-				mode: string;
-				price: number;
-			}[]
-		>
-	>;
-	setArtistListFiltered: Dispatch<
-		SetStateAction<
-			{
-				imagesDone: {
-					avatar: string;
-				};
-				name: string;
-				email: string;
-				mode: string;
-				price: number;
-			}[]
-		>
-	>;
-}
 
 export default function ModalFilterInstrument({
 	closeAllModals,
 	setArtistsRecomendedFiltered,
 	setArtistListFiltered,
-}: ModalFilterInstrumentProps) {
+}: any) {
 	const dispatch = useAppDispatch();
 	const search = useAppSelector((state) => state.search);
 	const form = useForm({

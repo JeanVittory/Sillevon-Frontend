@@ -1,5 +1,4 @@
 'use client';
-
 import Head from 'next/head';
 import { FC } from 'react';
 import Footer from './Footer';
@@ -109,7 +108,7 @@ const Layout: FC<LayoutProps> = ({ children, title }) => {
 								<ModalsProvider>
 									<HeaderNav />
 									{children}
-									<Footer data={data} />;
+									<Footer data={data} />
 								</ModalsProvider>
 							</Auth0Provider>
 						</MantineProvider>

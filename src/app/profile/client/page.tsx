@@ -1,22 +1,30 @@
-import Layout from '../../../components/Layout';
-import { GetServerSideProps } from 'next';
+'use client';
+
 import React, { useRef, useState, useCallback, useEffect } from 'react';
-import styles from '../../../styles/Client.module.scss';
 import ClientLayout from '../../../components/ClientLayout';
 import Posts from '../../../components/Posts';
+import { Loader as Loading } from '../../../components/Loader';
 import { Center, Loader } from '@mantine/core';
 import { usePosts } from '../../../hooks/posts';
+import { usePostClient, useClientData } from './service/client';
+import styles from '../../../styles/Client.module.scss';
 
-interface ClientProfileProps {
-	user: any;
-	posts: any;
+interface Posts {
+	post: [];
 }
 
-export default function Client({ user, posts }: ClientProfileProps) {
-	const watcher = useRef<any>(null);
+export default function Client() {
 	const [page, setPage] = useState<number>(1);
-	const [postsToRender, setPostsToRender] = useState<any[]>(posts);
+	const [postsToRender, setPostsToRender] = useState<any>();
 	const { newPosts, isLoading, hasNextPage } = usePosts(page);
+	const watcher = useRef<any>(null);
+	const { data: user, error: clientDataError, isLoading: isLoadingClientData } = useClientData();
+	const { data: posts, error, isLoading: isLoadingUserPosts } = usePostClient();
+
+	useEffect(() => {
+		setPostsToRender(posts);
+	}, [posts]);
+
 	useEffect(() => {
 		if (!(page === 1)) {
 			setPostsToRender((prev: any) => [...prev, ...newPosts]);
@@ -41,8 +49,14 @@ export default function Client({ user, posts }: ClientProfileProps) {
 		[isLoading, hasNextPage]
 	);
 
-	const posters = postsToRender.map((post: any, i: number) => {
-		if (postsToRender.length === i + 1) {
+	if (isLoadingUserPosts || isLoadingClientData)
+		return (
+			<div className={styles.loaderContainer}>
+				<Loading />
+			</div>
+		);
+	const posters = postsToRender?.post?.map((post: any, i: number) => {
+		if (postsToRender?.post.length === i + 1) {
 			return (
 				<div ref={lastPosts} key={post._id}>
 					<Posts
@@ -72,54 +86,13 @@ export default function Client({ user, posts }: ClientProfileProps) {
 	});
 
 	return (
-		<Layout title={`Sillevon | ${user.name}`}>
-			<ClientLayout>
-				<div className={styles.clientProfile}>{posters}</div>
-				{isLoading && (
-					<Center>
-						<Loader />
-					</Center>
-				)}
-			</ClientLayout>
-		</Layout>
+		<ClientLayout>
+			<div className={styles.clientProfile}>{posters}</div>
+			{isLoading && (
+				<Center>
+					<Loader />
+				</Center>
+			)}
+		</ClientLayout>
 	);
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const token = context.req.cookies['sillusr'];
-	let userData;
-	let posts;
-	let ordered;
-	try {
-		if (token) {
-			const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
-				method: 'GET',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				cache: 'no-store',
-			});
-			userData = await res.json();
-		} else {
-			userData = { data: 'Token has expired' };
-		}
-		const res = await fetch(`${process.env.NEXT_PUBLIC_GET_ALL_POSTS}?limit=10&page=1`, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-			cache: 'no-store',
-		});
-		posts = await res.json();
-		ordered = posts.data.docs;
-	} catch (e) {
-		console.log(e);
-	}
-
-	return {
-		props: {
-			user: userData.data,
-			posts: ordered,
-		},
-	};
-};

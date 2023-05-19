@@ -47,6 +47,7 @@
 		"react-loader-spinner": "5.3.4",
 		"react-redux": "8.0.5",
 		"socket.io-client": "4.6.1",
+		"swr": "^2.1.5",
 		"use-places-autocomplete": "4.0.0",
 		"uuid": "9.0.0"
 	},

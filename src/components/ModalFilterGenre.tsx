@@ -1,48 +1,19 @@
 'use client';
 
-import { Button, Select } from '@mantine/core';
+import { useState, useLayoutEffect } from 'react';
 import axios from 'axios';
-import { useState, Dispatch, SetStateAction, useLayoutEffect } from 'react';
-import { showNotification } from '@mantine/notifications';
 import { IconBug } from '@tabler/icons-react';
+import { showNotification } from '@mantine/notifications';
+import { Button, Select } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { setSliceGenre } from '../slices/searchSlice';
-
-interface ModalFilterGenreProps {
-	closeAllModals: (payload_0?: undefined) => void;
-	setArtistsRecomendedFiltered: Dispatch<
-		SetStateAction<
-			{
-				imagesDone: {
-					avatar: string;
-				};
-				name: string;
-				email: string;
-				mode: string;
-				price: number;
-			}[]
-		>
-	>;
-	setArtistListFiltered: Dispatch<
-		SetStateAction<
-			{
-				imagesDone: {
-					avatar: string;
-				};
-				name: string;
-				email: string;
-				mode: string;
-				price: number;
-			}[]
-		>
-	>;
-}
+import styles from '../styles/ModalGenre.module.scss';
 
 export default function ModalFilterGenre({
 	closeAllModals,
 	setArtistsRecomendedFiltered,
 	setArtistListFiltered,
-}: ModalFilterGenreProps) {
+}: any) {
 	const [genre, setGenre] = useState<string | null>(null);
 	const dispatch = useAppDispatch();
 	const search = useAppSelector((state) => state.search);
@@ -87,7 +58,7 @@ export default function ModalFilterGenre({
 	}
 
 	return (
-		<>
+		<div className={styles.modal}>
 			<Select
 				value={genre}
 				withAsterisk
@@ -98,31 +69,23 @@ export default function ModalFilterGenre({
 				nothingFound='No options'
 				radius='xl'
 				clearable
-				transitionProps={{ transition: 'pop-top-left', duration: 80, timingFunction: 'ease' }}
+				dropdownPosition='bottom'
+				withinPortal
+				transitionProps={{ transition: 'pop-bottom-right', duration: 80, timingFunction: 'ease' }}
 				data={[
 					{ value: 'Rock', label: 'Rock' },
-					{ value: 'Pop music', label: 'Pop music' },
+					{ value: 'Pop', label: 'Pop' },
 					{ value: 'Popular music', label: 'Popular music' },
 					{ value: 'Jazz', label: 'Jazz' },
 					{ value: 'Blues', label: 'Blues' },
 					{ value: 'Reggaeton', label: 'Reggaeton' },
-					{ value: 'Cubana', label: 'Cubana' },
-					{ value: 'Reggae', label: 'Reggae' },
-					{ value: 'Vallenato', label: 'Vallenato' },
+					{ value: 'Metal', label: 'Metal' },
 					{ value: 'Salsa', label: 'Salsa' },
-					{ value: 'Cumbia', label: 'Cumbia' },
-					{
-						value: 'Classical music',
-						label: 'Classical music',
-					},
-					{ value: 'Floklore', label: 'Floklore' },
-					{ value: 'Flamenco', label: 'Flamenco' },
-					{ value: 'Merengue', label: 'Merengue' },
 				]}
 			/>
 			<Button fullWidth onClick={handleClick} mt='md'>
 				Submit
 			</Button>
-		</>
+		</div>
 	);
 }
