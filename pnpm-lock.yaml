@@ -23,10 +23,12 @@ specifiers:
   '@tabler/icons-react': 2.18.0
   '@types/js-cookie': 3.0.3
   '@types/jsonwebtoken': 9.0.2
+  '@types/leaflet': ^1.9.3
   '@types/node': 20.1.4
   '@types/react': 18.2.6
   '@types/react-beautiful-dnd': 13.1.4
   '@types/react-dom': 18.2.4
+  '@types/react-leaflet': ^3.0.0
   '@types/uuid': 9.0.1
   axios: 1.4.0
   chart.js: 4.3.0
@@ -38,6 +40,9 @@ specifiers:
   eslint-config-next: 13.4.2
   js-cookie: 3.0.5
   jsonwebtoken: 9.0.0
+  leaflet: ^1.9.4
+  leaflet-defaulticon-compatibility: ^0.1.1
+  leaflet-geosearch: ^3.8.0
   mongoose: 7.1.1
   next: 13.4.2
   react: 18.2.0
@@ -45,6 +50,7 @@ specifiers:
   react-chartjs-2: 5.2.0
   react-dom: 18.2.0
   react-jwt: 1.1.8
+  react-leaflet: ^4.2.1
   react-loader-spinner: 5.3.4
   react-redux: 8.0.5
   sass: 1.62.1
@@ -83,6 +89,9 @@ dependencies:
   emoji-picker-react: 4.4.9_react@18.2.0
   js-cookie: 3.0.5
   jsonwebtoken: 9.0.0
+  leaflet: 1.9.4
+  leaflet-defaulticon-compatibility: 0.1.1
+  leaflet-geosearch: 3.8.0
   mongoose: 7.1.1
   next: 13.4.2_txdvpvppf2ilsh27xadmwrzlmm
   react: 18.2.0
@@ -90,6 +99,7 @@ dependencies:
   react-chartjs-2: 5.2.0_jzw32sextkxj6pznyxerjojkqm
   react-dom: 18.2.0_react@18.2.0
   react-jwt: 1.1.8_react@18.2.0
+  react-leaflet: 4.2.1_p7e52lah55xmyywv7f3e7owrmy
   react-loader-spinner: 5.3.4_biqbaboplfbrettd7655fr4n2y
   react-redux: 8.0.5_lhsvdmrfrkqkmxtqosqgyd3k4i
   socket.io-client: 4.6.1
@@ -100,10 +110,12 @@ dependencies:
 devDependencies:
   '@types/js-cookie': 3.0.3
   '@types/jsonwebtoken': 9.0.2
+  '@types/leaflet': 1.9.3
   '@types/node': 20.1.4
   '@types/react': 18.2.6
   '@types/react-beautiful-dnd': 13.1.4
   '@types/react-dom': 18.2.4
+  '@types/react-leaflet': 3.0.0_p7e52lah55xmyywv7f3e7owrmy
   '@types/uuid': 9.0.1
   eslint: 8.40.0
   eslint-config-next: 13.4.2_3qfatcekpgbllh6uk5ivyhkbxq
@@ -1085,6 +1097,17 @@ packages:
     resolution: {integrity: sha512-jOuyqzWLeXvQcoAu6TCVWHAuko+sDt0JjawNHBGqUNLywMtTCvYP0L0PiqJZOUCUeRYGdUy0AKxQ+30vAkvwag==}
     dev: false
 
+  /@react-leaflet/core/2.1.0_p7e52lah55xmyywv7f3e7owrmy:
+    resolution: {integrity: sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg==}
+    peerDependencies:
+      leaflet: ^1.9.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      leaflet: 1.9.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+
   /@reduxjs/toolkit/1.9.5_k4ae6lp43ej6mezo3ztvx6pykq:
     resolution: {integrity: sha512-Rt97jHmfTeaxL4swLRNPD/zV4OxTes4la07Xc4hetpUW/vc75t5m1ANyxG6ymnEQ2FsLQsoMlYB2vV1sO3m8tQ==}
     peerDependencies:
@@ -1149,6 +1172,10 @@ packages:
     resolution: {integrity: sha512-N7a20mwbhrFXNqvd8Rxa0Btwu1Li5rQbqdIi3mzt5HRjP25PbyYuTU2BXbu8yMEnUk018Gi13gpS/jlMgXFuOw==}
     dev: false
 
+  /@types/geojson/7946.0.10:
+    resolution: {integrity: sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==}
+    dev: true
+
   /@types/google.maps/3.50.5:
     resolution: {integrity: sha512-RuZf1MJtctGlpW+Gd4a/eGtAufUDjMf+eyN1l+B3fbe2YLScJbg8KEljJfb+6vnSPFAeM1/48geVIEg3vqOkxw==}
     dev: false
@@ -1174,6 +1201,12 @@ packages:
       '@types/node': 20.1.4
     dev: true
 
+  /@types/leaflet/1.9.3:
+    resolution: {integrity: sha512-Caa1lYOgKVqDkDZVWkto2Z5JtVo09spEaUt2S69LiugbBpoqQu92HYFMGUbYezZbnBkyOxMNPXHSgRrRY5UyIA==}
+    dependencies:
+      '@types/geojson': 7946.0.10
+    dev: true
+
   /@types/node/20.1.4:
     resolution: {integrity: sha512-At4pvmIOki8yuwLtd7BNHl3CiWNbtclUbNtScGx4OHfBd4/oWoJC8KRCIxXwkdndzhxOsPXihrsOoydxBjlE9Q==}
 
@@ -1194,6 +1227,17 @@ packages:
     resolution: {integrity: sha512-G2mHoTMTL4yoydITgOGwWdWMVd8sNgyEP85xVmMKAPUBwQWm9wBPQUmvbeF4V3WBY1P7mmL4BkjQ0SqUpf1snw==}
     dependencies:
       '@types/react': 18.2.6
+
+  /@types/react-leaflet/3.0.0_p7e52lah55xmyywv7f3e7owrmy:
+    resolution: {integrity: sha512-p8R9mVKbCDDqOdW+M6GyJJuFn6q+IgDFYavFiOIvaWHuOe5kIHZEtCy1pfM43JIA6JiB3D/aDoby7C51eO+XSg==}
+    deprecated: This is a stub types definition. react-leaflet provides its own type definitions, so you do not need this installed.
+    dependencies:
+      react-leaflet: 4.2.1_p7e52lah55xmyywv7f3e7owrmy
+    transitivePeerDependencies:
+      - leaflet
+      - react
+      - react-dom
+    dev: true
 
   /@types/react-redux/7.1.25:
     resolution: {integrity: sha512-bAGh4e+w5D8dajd6InASVIyCo4pZLJ66oLb80F9OBLO1gKESbZcRCJpTT6uLXX+HAB57zw1WTdwJdAsewuTweg==}
@@ -3058,6 +3102,20 @@ packages:
       language-subtag-registry: 0.3.22
     dev: true
 
+  /leaflet-defaulticon-compatibility/0.1.1:
+    resolution: {integrity: sha512-vDBFdlUAwjSEGep9ih8kfJilf6yN8V9zTbF5NC/1ZwLeGko3RUQepspPnGCRMFV51dY3Lb3hziboicrFz+rxQA==}
+    dev: false
+
+  /leaflet-geosearch/3.8.0:
+    resolution: {integrity: sha512-YYFigq2JkqaZrgEjxWyvyQy4seh0Il9xPlG+IP2Z3+K7DrQ+bYc7qDizmxKbAn2jSNUCvokz75gXj7wXcFDB9A==}
+    optionalDependencies:
+      '@googlemaps/js-api-loader': 1.15.1
+      leaflet: 1.9.4
+    dev: false
+
+  /leaflet/1.9.4:
+    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
+
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
@@ -3567,7 +3625,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
 
   /react-dropzone/14.2.3_react@18.2.0:
     resolution: {integrity: sha512-O3om8I+PkFKbxCukfIR3QAGftYXDZfOE2N1mr/7qebQJHs7U+/RSL/9xomJNpRg9kM5h9soQSdf0Gc7OHF5Fug==}
@@ -3602,6 +3659,18 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: false
+
+  /react-leaflet/4.2.1_p7e52lah55xmyywv7f3e7owrmy:
+    resolution: {integrity: sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q==}
+    peerDependencies:
+      leaflet: ^1.9.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      '@react-leaflet/core': 2.1.0_p7e52lah55xmyywv7f3e7owrmy
+      leaflet: 1.9.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
 
   /react-loader-spinner/5.3.4_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-G2vw4ssX+RDZ/vfaeva06yfNqyFViv/u+tVZ3kFLy5TKNlNx2DbuwreBSpRtPespQA+VxinxUJsigwLwG9erOg==}
@@ -3760,7 +3829,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /readable-stream/1.0.34:
     resolution: {integrity: sha512-ok1qVCJuRkNmvebYikljxJA/UEsKwLl2nI1OmaqAu4/UE+h0wKCHok4XkL/gvi39OacXvw59RJUOFUkDib2rHg==}
@@ -3899,7 +3967,6 @@ packages:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /semver/6.3.0:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}

@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
-import { IconPlayerPlay } from '@tabler/icons-react';
+import { icon } from 'leaflet';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import styles from '../styles/Map.module.scss';
+import 'leaflet/dist/leaflet.css';
 
 interface MapProps {
 	zoom: number;
@@ -17,28 +17,22 @@ interface MapProps {
 		lng: number;
 	};
 }
-const options = {
-	disableDefaultUI: true,
-	zoomControl: true,
-};
 
-export default function Map({ zoom, center, className, position }: MapProps) {
-	const { isLoaded } = useLoadScript({
-		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+export default function Map({ zoom, center, position }: MapProps) {
+	const ICON = icon({
+		iconUrl: '/location-pin.svg',
+		iconSize: [20, 20],
 	});
-	const fixedCenter = useMemo(() => center, [center]);
-
-	if (!isLoaded) return <div>Loading...</div>;
 
 	return (
 		<div className={styles.mapContainer}>
-			<div className={styles.sillevonLogoforMap}>
-				<IconPlayerPlay />
-				<h2>Sillevon</h2>
-			</div>
-			<GoogleMap zoom={zoom} center={fixedCenter} mapContainerClassName={className} options={options}>
-				<Marker position={position} />
-			</GoogleMap>
+			<MapContainer className={styles.map} center={center} zoom={zoom} scrollWheelZoom={true}>
+				<TileLayer
+					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+				/>
+				<Marker position={position} draggable icon={ICON} />
+			</MapContainer>
 		</div>
 	);
 }

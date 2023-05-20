@@ -1,110 +1,106 @@
-import Layout from '../../../components/Layout';
-import styles from '../../../styles/ArtistsProfile.module.scss';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Center, Text } from '@mantine/core';
 import Posts from '../../../components/Posts';
 import UserStats from '../../../components/UserStats';
 import Map from '../../../components/Map';
 import { UserCardProfile } from '../../../components/UserCardProfile';
-import { Center, Text } from '@mantine/core';
+import { artistProfile } from './services/artistProfile';
 import { useAppDispatch } from '../../../hooks/redux';
 import { setAvatar } from '../../../slices/userSlice';
+import styles from '../../../styles/ArtistsProfile.module.scss';
 
-interface ArtistsProfileProps {
-	user: any;
-}
+export default function ArtistsProfile() {
+	const [user, setUser] = useState<any>();
+	const dispatch: any = useAppDispatch();
+	const [data, setData] = useState<any>();
 
-export default function ArtistsProfile({ user }: ArtistsProfileProps) {
-	const dispatch = useAppDispatch();
-	dispatch(setAvatar({ avatar: user.imagesDone.avatar }));
-	const data = {
-		labels: ['Improvisation', 'Versatility', 'Repertoire', 'Instrumentation', 'Show'],
-		datasets: [
-			{
-				label: 'Skills',
-				data: [
-					user.skills?.improvisation as number,
-					user.skills?.versatility as number,
-					user.skills?.repertoire as number,
-					user.skills?.instrumentation as number,
-					user.skills?.show as number,
+	useEffect(() => {
+		artistProfile().then((response: any) => {
+			setUser(response);
+		});
+	}, []);
+
+	useEffect(() => {
+		if (user) {
+			setData({
+				labels: ['Improvisation', 'Versatility', 'Repertoire', 'Instrumentation', 'Show'],
+				datasets: [
+					{
+						label: 'Skills',
+						data: [
+							user.user.skills?.improvisation as number,
+							user.user.skills?.versatility as number,
+							user.user.skills?.repertoire as number,
+							user.user.skills?.instrumentation as number,
+							user.user.skills?.show as number,
+						],
+						fill: true,
+						backgroundColor: 'rgba(59, 130, 245, 0.2)',
+						borderColor: 'rgb(59, 130, 245)',
+						pointBackgroundColor: 'rgb(59, 130, 245)',
+						pointBorderColor: '#fff',
+						pointHoverBackgroundColor: '#fff',
+						pointHoverBorderColor: 'rgb(59, 130, 245)',
+					},
 				],
-				fill: true,
-				backgroundColor: 'rgba(59, 130, 245, 0.2)',
-				borderColor: 'rgb(59, 130, 245)',
-				pointBackgroundColor: 'rgb(59, 130, 245)',
-				pointBorderColor: '#fff',
-				pointHoverBackgroundColor: '#fff',
-				pointHoverBorderColor: 'rgb(59, 130, 245)',
-			},
-		],
-	};
+			});
+		}
+	}, [user]);
+
+	if (!data || !user) return <div>Loading...</div>;
+
+	//dispatch(setAvatar({ avatar: user?.imagesDone?.avatar }));
+
+	console.log(user);
 	return (
-		<Layout title={`Sillevon | ${user.name}`}>
-			<div className={styles.artistsProfileContainer}>
-				<div className={styles.userProfileCardInfo}>
-					<div className={styles.cardProfileInfo}>
-						<UserCardProfile user={user} avatar={user.imagesDone.avatar} name={user.name} />
-					</div>
-				</div>
-				<div>
-					<Text
-						component='span'
-						align='center'
-						variant='gradient'
-						gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
-						size={50}
-						weight={700}
-						style={{ fontFamily: 'Greycliff CF, sans-serif' }}
-					>
-						Dashboard
-					</Text>
-					<div className={styles.allProfilePosts}>
-						{user.posts.length > 0 ? (
-							user.posts.map((post: any) => (
-								<Posts
-									key={post._id}
-									postId={post._id}
-									urlImage={post.urlImage}
-									title={post.title}
-									likesAmount={post.likes}
-									comments={post.comments}
-								/>
-							))
-						) : (
-							<Center>
-								<Text>There is not posts</Text>
-							</Center>
-						)}
-					</div>
-				</div>
-				<div>
-					<div className={styles.userProfileStats}>
-						<UserStats data={data} />
-						<Map
-							zoom={11}
-							center={user.location}
-							className={styles.userProfileMap}
-							position={user.location}
-						/>
-					</div>
+		<div className={styles.artistsProfileContainer}>
+			<div className={styles.userProfileCardInfo}>
+				<UserCardProfile user={user} avatar={user?.imagesDone?.avatar} name={user.name} />
+			</div>
+			<div>
+				<Text
+					component='span'
+					align='center'
+					variant='gradient'
+					gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
+					size={50}
+					weight={700}
+					style={{ fontFamily: 'Greycliff CF, sans-serif' }}
+				>
+					Dashboard
+				</Text>
+				<div className={styles.allProfilePosts}>
+					{user?.posts?.length > 0 ? (
+						user.posts.map((post: any) => (
+							<Posts
+								key={post._id}
+								postId={post._id}
+								urlImage={post.urlImage}
+								title={post.title}
+								likesAmount={post.likes}
+								comments={post.comments}
+							/>
+						))
+					) : (
+						<Center>
+							<Text>There is not posts</Text>
+						</Center>
+					)}
 				</div>
 			</div>
-		</Layout>
+			<div>
+				<div className={styles.userProfileStats}>
+					<UserStats data={data} />
+					<Map
+						zoom={11}
+						center={{ lat: 4.624335, lng: -74.063644 }}
+						className={styles.userProfileMap}
+						position={{ lat: 4.624335, lng: -74.063644 }}
+					/>
+				</div>
+			</div>
+		</div>
 	);
 }
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-// 	const token = context.req.cookies['sillusr'];
-// 	let userData;
-// 	if (token) {
-// 		const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
-// 			method: 'GET',
-// 			headers: {
-// 				Authorization: `Bearer ${token}`,
-// 			},
-// 		});
-// 		userData = await res.json();
-// 	}
-// 	return {
-// 		props: { user: userData.data },
-// 	};
-// };

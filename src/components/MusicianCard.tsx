@@ -15,6 +15,11 @@ interface MusicianCardProps {
 
 const MusicianCard: NextPage<MusicianCardProps> = ({ avatar, name, instrument, price, email }) => {
 	const router = useRouter();
+
+	const handlerClick = () => {
+		router.push(`/artists/${email}`);
+	};
+
 	return (
 		<Paper
 			radius='md'
@@ -31,13 +36,7 @@ const MusicianCard: NextPage<MusicianCardProps> = ({ avatar, name, instrument, p
 			<Text align='center' color='dimmed' size='sm'>
 				{instrument} • $ {price.toFixed(2)} /hr
 			</Text>
-			<Button
-				variant='default'
-				fullWidth
-				mt='md'
-				radius='md'
-				onClick={() => router.push(`/artists/${email}`)}
-			>
+			<Button variant='default' fullWidth mt='md' radius='md' onClick={handlerClick}>
 				Go to profile
 			</Button>
 		</Paper>

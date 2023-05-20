@@ -57,7 +57,6 @@ const Artists = () => {
 	const [artistsRecomendedFiltered, setArtistsRecomendedFiltered] = useState<artistsRecomended>();
 	const [city, setCity] = useState<string>('');
 	const dispatch = useAppDispatch();
-	const search = useAppSelector((state) => state.search);
 	const [pagination, setPagination] = useState<number | undefined>(1);
 	const [hasNextPage, setHasNextPage] = useState<boolean>();
 	const [max, setMax] = useState<number>();
@@ -70,6 +69,10 @@ const Artists = () => {
 			setHasNextPage(nextPage);
 			setHasPrevPage(prevPage);
 			setMax(max);
+		});
+
+		artistsRecomendedService().then(({ artistsRecomended }: any) => {
+			setArtistsRecomendedFiltered(artistsRecomended);
 		});
 	}, []);
 
@@ -112,16 +115,18 @@ const Artists = () => {
 		try {
 			setIconLoading(true);
 			const resRecomended = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&city=${city}&genre=${search.genre}&price=${search.instrument}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&city=${city}`
 			);
-			console.log(resRecomended)
 			if (resRecomended.data.data.docs.length > 0) {
 				setArtistsRecomendedFiltered(resRecomended.data.data.docs);
+				setHasNextPage(resRecomended.data.data.nextPage);
+				setHasPrevPage(resRecomended.data.data.prevPage);
+				setMax(resRecomended.data.data.totalPages);
 			} else {
 				throw new Error('There are not artist in this location');
 			}
 			const resList = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&city=${city}&genre=${search.genre}&price=${search.instrument}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&city=${city}`
 			);
 			if (resList.data.data.docs.length > 0) {
 				setArtistListFiltered(resList.data.data.docs);
@@ -141,6 +146,12 @@ const Artists = () => {
 			setIconLoading(false);
 		}
 	}
+	if (!artistListFiltered)
+		return (
+			<div className={styles.loader}>
+				<Loader />
+			</div>
+		);
 
 	return (
 		<section className={styles.artistsContainer}>
@@ -167,6 +178,9 @@ const Artists = () => {
 											setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
 											setArtistListFiltered={setArtistListFiltered}
 											closeAllModals={closeAllModals}
+											setHasNextPage={setHasNextPage}
+											setHasPrevPage={setHasPrevPage}
+											setMax={setMax}
 										/>
 									),
 								});
@@ -186,6 +200,9 @@ const Artists = () => {
 											setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
 											setArtistListFiltered={setArtistListFiltered}
 											closeAllModals={closeAllModals}
+											setHasNextPage={setHasNextPage}
+											setHasPrevPage={setHasPrevPage}
+											setMax={setMax}
 										/>
 									),
 								});
@@ -205,6 +222,9 @@ const Artists = () => {
 											setArtistsRecomendedFiltered={setArtistsRecomendedFiltered}
 											setArtistListFiltered={setArtistListFiltered}
 											closeAllModals={closeAllModals}
+											setHasNextPage={setHasNextPage}
+											setHasPrevPage={setHasPrevPage}
+											setMax={setMax}
 										/>
 									),
 								});

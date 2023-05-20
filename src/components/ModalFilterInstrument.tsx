@@ -12,6 +12,9 @@ export default function ModalFilterInstrument({
 	closeAllModals,
 	setArtistsRecomendedFiltered,
 	setArtistListFiltered,
+	setHasNextPage,
+	setHasPrevPage,
+	setMax,
 }: any) {
 	const dispatch = useAppDispatch();
 	const search = useAppSelector((state) => state.search);
@@ -28,30 +31,29 @@ export default function ModalFilterInstrument({
 				dispatch(setSliceInstrument({ instrument: values.instrument.toLowerCase() }));
 				try {
 					const resRecomended = await axios.get(
-						`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&city=${search.city}&genre=${
-							search.genre
-						}&price=${JSON.stringify(search.price)}&instrument=${form.values.instrument}`
+						`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&instrument=${form.values.instrument}`
 					);
 					if (resRecomended.data.data.docs.length > 0) {
 						setArtistsRecomendedFiltered(resRecomended.data.data.docs);
+						setHasNextPage(resRecomended.data.data.nextPage);
+						setHasPrevPage(resRecomended.data.data.prevPage);
+						setMax(resRecomended.data.data.totalPages);
 					} else {
-						throw new Error('There are not artist with this genre');
+						throw new Error('There are not artist with this instrument');
 					}
 					const resList = await axios.get(
-						`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&city=${search.city}&genre=${
-							search.genre
-						}&price=${JSON.stringify(search.price)}&instrument=${form.values.instrument}`
+						`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&instrument=${form.values.instrument}`
 					);
 					if (resList.data.data.docs.length > 0) {
 						setArtistListFiltered(resList.data.data.docs);
 					} else {
-						throw new Error('There are not artist with this genre');
+						throw new Error('There are not artist with this instrument');
 					}
 				} catch {
 					showNotification({
 						id: 'load-data-user',
 						color: 'red',
-						title: 'There are not artist with this genre',
+						title: 'There are not artist with this instrument',
 						message: 'Notification will close in 4 seconds, you can close this notification now',
 						icon: <IconBug size={16} />,
 						autoClose: 4000,
@@ -67,6 +69,9 @@ export default function ModalFilterInstrument({
 				withAsterisk
 				radius='xl'
 			/>
+			<Button fullWidth mt='md' type='submit'>
+				Submit
+			</Button>
 		</form>
 	);
 }

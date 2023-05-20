@@ -1,5 +1,5 @@
 'use client';
-import styles from '../../styles/ErrorRegisterStepper.module.scss';
+import styles from '../../../styles/ErrorRegisterStepper.module.scss';
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
 	return (
