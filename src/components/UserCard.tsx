@@ -18,7 +18,7 @@ interface UserCardProps {
 	job: string;
 	stats: { label: string; value: number }[];
 	instrument: string;
-	setConnections: Dispatch<SetStateAction<any[]>>;
+	setConnections: any;
 }
 
 export function UserCard({
@@ -58,7 +58,7 @@ export function UserCard({
 						Authorization: `Bearer ${token}`,
 					},
 				});
-				setConnections((prev) => [...prev, res.data]);
+				setConnections((prev: any) => [...prev, res.data]);
 				showNotification({
 					id: 'load-data-user',
 					color: 'teal',

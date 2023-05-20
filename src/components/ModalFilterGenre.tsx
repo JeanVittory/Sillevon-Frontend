@@ -13,6 +13,9 @@ export default function ModalFilterGenre({
 	closeAllModals,
 	setArtistsRecomendedFiltered,
 	setArtistListFiltered,
+	setHasNextPage,
+	setHasPrevPage,
+	setMax,
 }: any) {
 	const [genre, setGenre] = useState<string | null>(null);
 	const dispatch = useAppDispatch();
@@ -26,26 +29,26 @@ export default function ModalFilterGenre({
 		closeAllModals();
 		try {
 			const resRecomended = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&city=${
-					search.city
-				}&genre=${genre}&price=${JSON.stringify(search.price)}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&genre=${genre}`
 			);
+
 			if (resRecomended.data.data.docs.length > 0) {
 				setArtistsRecomendedFiltered(resRecomended.data.data.docs);
+				setHasNextPage(resRecomended.data.data.nextPage);
+				setHasPrevPage(resRecomended.data.data.prevPage);
+				setMax(resRecomended.data.data.totalPages);
 			} else {
 				throw new Error('There are not artist with this genre');
 			}
 			const resList = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&city=${
-					search.city
-				}&genre=${genre}&price=${JSON.stringify(search.price)}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&genre=${genre}`
 			);
 			if (resList.data.data.docs.length > 0) {
 				setArtistListFiltered(resList.data.data.docs);
 			} else {
 				throw new Error('There are not artist with this genre');
 			}
-		} catch {
+		} catch (error) {
 			showNotification({
 				id: 'load-data-user',
 				color: 'red',

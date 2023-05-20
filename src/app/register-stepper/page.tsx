@@ -60,6 +60,7 @@ export default function RegisterStepper() {
 				<Loader />
 			</div>
 		);
+
 	return (
 		<>
 			<section className={styles.registerStepper}>

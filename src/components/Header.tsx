@@ -37,7 +37,7 @@ const HeaderNav: NextPage = () => {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const { user, isAuthenticated } = useAuth0();
-	const { imagesDone } = useAppSelector((state) => state.user);
+	const userRedux = useAppSelector((state) => state.user);
 	const trigger = Cookies.get('trigger');
 
 	if (trigger && isAuthenticated) {
@@ -99,7 +99,7 @@ const HeaderNav: NextPage = () => {
 	const auth = isExpired;
 
 	const mode = Cookies.get('mode');
-	const avatar = imagesDone?.avatar || Cookies.get('avatar');
+	const avatar = userRedux?.imagesDone?.avatar || Cookies.get('avatar');
 
 	return (
 		<Box className={classes.container}>

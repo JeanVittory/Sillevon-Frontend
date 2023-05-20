@@ -5,6 +5,6 @@ import styles from '../styles/Loader.module.scss';
 
 export const Loader = () => (
 	<div className={styles.loader}>
-		<Bars color='#ffffff' width={15} height={15} />
+		<Bars color='black' width={15} height={15} />
 	</div>
 );

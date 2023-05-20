@@ -8,40 +8,13 @@ import axios from 'axios';
 import { IconBug } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
 
-// interface ModalFilterPriceProps {
-// 	closeAllModals: (payload_0?: undefined) => void;
-// 	setArtistsRecomendedFiltered: Dispatch<
-// 		SetStateAction<
-// 			{
-// 				imagesDone: {
-// 					avatar: string;
-// 				};
-// 				name: string;
-// 				email: string;
-// 				mode: string;
-// 				price: number;
-// 			}[]
-// 		>
-// 	>;
-// 	setArtistListFiltered: Dispatch<
-// 		SetStateAction<
-// 			{
-// 				imagesDone: {
-// 					avatar: string;
-// 				};
-// 				name: string;
-// 				email: string;
-// 				mode: string;
-// 				price: number;
-// 			}[]
-// 		>
-// 	>;
-// }
-
 export function ModalFilterPrice({
 	setArtistsRecomendedFiltered,
 	setArtistListFiltered,
 	closeAllModals,
+	setHasNextPage,
+	setHasPrevPage,
+	setMax,
 }: any) {
 	const [rangeValue, setRangeValue] = useState<[number, number]>([10, 30]);
 	const dispatch = useAppDispatch();
@@ -52,30 +25,33 @@ export function ModalFilterPrice({
 		closeAllModals();
 		try {
 			const resRecomended = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&city=${search.city}&genre=${
-					search.genre
-				}&price=${JSON.stringify(rangeValue)}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=5&page=1&price=${JSON.stringify(
+					rangeValue
+				)}`
 			);
 			if (resRecomended.data.data.docs.length > 0) {
 				setArtistsRecomendedFiltered(resRecomended.data.data.docs);
+				setHasNextPage(resRecomended.data.data.nextPage);
+				setHasPrevPage(resRecomended.data.data.prevPage);
+				setMax(resRecomended.data.data.totalPages);
 			} else {
 				throw new Error('There are not artist with this genre');
 			}
 			const resList = await axios.get(
-				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&city=${search.city}&genre=${
-					search.genre
-				}&price=${JSON.stringify(rangeValue)}&instrument=${search.instrument}`
+				`${process.env.NEXT_PUBLIC_GET_FILTERED_ARTISTS}?limit=10&page=1&price=${JSON.stringify(
+					rangeValue
+				)}`
 			);
 			if (resList.data.data.docs.length > 0) {
 				setArtistListFiltered(resList.data.data.docs);
 			} else {
 				throw new Error('There are not artist with this genre');
 			}
-		} catch {
+		} catch (error) {
 			showNotification({
 				id: 'load-data-user',
 				color: 'red',
-				title: 'There are not artist with this genre',
+				title: 'There are not artist with this range price',
 				message: 'Notification will close in 4 seconds, you can close this notification now',
 				icon: <IconBug size={16} />,
 				autoClose: 4000,

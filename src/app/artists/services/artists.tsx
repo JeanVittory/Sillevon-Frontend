@@ -42,7 +42,6 @@ export async function artistsRecomendedService() {
 			artistsRecomended: toFront,
 		};
 	} catch (error) {
-		console.log(error);
 		return error;
 	}
 }
@@ -50,7 +49,6 @@ export function useArtists() {
 	const { data, error, isLoading } = useSWR<any>('artist', artistsService, {
 		revalidateOnFocus: false,
 	});
-	console.log(data);
 	return {
 		data,
 		error,

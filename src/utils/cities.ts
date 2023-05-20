@@ -18,6 +18,7 @@ export const colombiaCities = [
 	'Magangué, Bolivar, Colombia',
 	'El Carmen de Bolivar, Bolivar, Colombia',
 	'Tunja, Boyacá, Colombia',
+	'Bogotá, Colombia',
 	'Duitama, Boyacá, Colombia',
 	'Sogamoso, Boyacá, Colombia',
 	'Manizales, Caldas, Colombia',

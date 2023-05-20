@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { openModal, closeAllModals } from '@mantine/modals';
 import { Navbar, Group, Avatar, Button, Text } from '@mantine/core';
 import {
 	IconSettings,
@@ -11,13 +13,11 @@ import {
 	IconLogout,
 	IconTable,
 } from '@tabler/icons-react';
-import { useUserNavProfile } from './ui/useUserNavProfile';
-import Cookies from 'js-cookie';
-import { openModal, closeAllModals } from '@mantine/modals';
-import AddPost from './AddPost';
-import { useRouter } from 'next/navigation';
 import { useAuth0 } from '@auth0/auth0-react';
+import Cookies from 'js-cookie';
+import { useUserNavProfile } from './ui/useUserNavProfile';
 import { useAppSelector } from '../hooks/redux';
+import AddPost from './AddPost';
 
 const data = [
 	{ label: 'Connections', icon: IconUsers },
@@ -125,15 +125,13 @@ export function UserCardProfile({}: UserCardProfileProps) {
 	));
 
 	return (
-		<Navbar height={700} width={{ sm: 300 }} p='md'>
-			<Navbar.Section grow>
+		<Navbar width={{ sm: 300 }} p='md' className={classes.navbarArtist}>
+			<Navbar.Section>
 				<Group className={classes.header} position='apart'>
 					<Avatar src={storedavatar} size={37} />
 					<Text>{storedName}</Text>
 				</Group>
 				{links}
-			</Navbar.Section>
-			<Navbar.Section className={classes.footer}>
 				<Button
 					variant='outline'
 					className={classes.link}
