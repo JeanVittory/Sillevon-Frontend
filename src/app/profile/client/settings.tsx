@@ -1,9 +1,9 @@
 import Layout from '../../../components/Layout';
 import ClientLayout from '../../../components/ClientLayout';
 import { Card, TextInput, PasswordInput, Button, Avatar, Text, FileInput } from '@mantine/core';
-import { IconLock, IconCheck, IconBug, IconUser } from '@tabler/icons';
+import { IconLock, IconCheck, IconBug, IconUser } from '@tabler/icons-react';
 import { useState } from 'react';
-import { ConnectionsProps } from './connections';
+import { ConnectionsProps } from './connections/page';
 import { GetServerSideProps } from 'next';
 import styles from '../../../styles/SettingsClient.module.scss';
 import { updatedSettings, updatedSettingsRegular } from '../../../lib/userdata';

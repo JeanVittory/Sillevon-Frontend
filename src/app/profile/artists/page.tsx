@@ -6,6 +6,7 @@ import Posts from '../../../components/Posts';
 import UserStats from '../../../components/UserStats';
 import Map from '../../../components/Map';
 import { UserCardProfile } from '../../../components/UserCardProfile';
+import { Loader } from '../../../components/Loader';
 import { artistProfile } from './services/artistProfile';
 import { useAppDispatch } from '../../../hooks/redux';
 import { setAvatar } from '../../../slices/userSlice';
@@ -15,6 +16,7 @@ export default function ArtistsProfile() {
 	const [user, setUser] = useState<any>();
 	const dispatch: any = useAppDispatch();
 	const [data, setData] = useState<any>();
+	const [reFetch, setReFetch] = useState(false);
 
 	useEffect(() => {
 		artistProfile().then((response: any) => {
@@ -22,6 +24,12 @@ export default function ArtistsProfile() {
 		});
 	}, []);
 
+	useEffect(() => {
+		artistProfile().then((response: any) => {
+			setUser(response);
+		});
+		setReFetch(false);
+	}, [reFetch]);
 	useEffect(() => {
 		if (user) {
 			setData({
@@ -49,31 +57,41 @@ export default function ArtistsProfile() {
 		}
 	}, [user]);
 
-	if (!data || !user) return <div>Loading...</div>;
+	if (!data || !user)
+		return (
+			<div className={styles.loaderContainer}>
+				<Loader />
+			</div>
+		);
 
 	//dispatch(setAvatar({ avatar: user?.imagesDone?.avatar }));
 
-	console.log(user);
 	return (
 		<div className={styles.artistsProfileContainer}>
 			<div className={styles.userProfileCardInfo}>
-				<UserCardProfile user={user} avatar={user?.imagesDone?.avatar} name={user.name} />
+				<UserCardProfile
+					user={user}
+					avatar={user?.imagesDone?.avatar}
+					name={user.name}
+					setReFetch={setReFetch}
+				/>
 			</div>
-			<div>
+			<div className={styles.postsContainerArtistProfile}>
 				<Text
 					component='span'
 					align='center'
+					p={'1rem'}
 					variant='gradient'
 					gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
-					size={50}
+					size={30}
 					weight={700}
 					style={{ fontFamily: 'Greycliff CF, sans-serif' }}
 				>
 					Dashboard
 				</Text>
 				<div className={styles.allProfilePosts}>
-					{user?.posts?.length > 0 ? (
-						user.posts.map((post: any) => (
+					{user?.user.posts?.length > 0 ? (
+						user.user.posts.map((post: any) => (
 							<Posts
 								key={post._id}
 								postId={post._id}

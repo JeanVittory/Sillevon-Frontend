@@ -1,25 +1,28 @@
 'use client';
 
-import { Button, TextInput } from '@mantine/core';
 import { useState } from 'react';
-import Image from 'next/image';
-import { DropZone } from './DropZone';
-import style from '../styles/AddPost.module.scss';
-import { FileWithPath } from '@mantine/dropzone';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { IconBug, IconCheck } from '@tabler/icons-react';
-import { showNotification } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import Image from 'next/image';
+import Cookies from 'js-cookie';
+import { showNotification } from '@mantine/notifications';
+import { Button, TextInput } from '@mantine/core';
+import { FileWithPath } from '@mantine/dropzone';
+import { IconBug, IconCheck } from '@tabler/icons-react';
+import { DropZone } from './DropZone';
+import { Loader } from './Loader';
+import style from '../styles/AddPost.module.scss';
 
 interface AddPostProps {
 	closeAllModals: (payload_0?: undefined) => void;
+	setReFetch: any;
 }
 
-export default function AddPost({ closeAllModals }: AddPostProps) {
+export default function AddPost({ closeAllModals, setReFetch }: AddPostProps) {
 	const [title, setTitle] = useState<string>('');
 	const [image, setImage] = useState<FileWithPath | null>(null);
 	const [preview, setPreview] = useState<string | ArrayBuffer | null>('');
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const router = useRouter();
 
 	function readPost(file: FileWithPath | null | undefined) {
@@ -41,6 +44,7 @@ export default function AddPost({ closeAllModals }: AddPostProps) {
 		data.append('title', title);
 		data.append('urlImage', image as string | Blob, image?.name);
 		try {
+			setIsLoading(true);
 			const res = await axios.post(process.env.NEXT_PUBLIC_POST_POSTS as string, data, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
@@ -56,6 +60,8 @@ export default function AddPost({ closeAllModals }: AddPostProps) {
 				autoClose: 4000,
 			});
 			closeAllModals();
+			setReFetch(true);
+			setIsLoading(false);
 			router.push('/profile/artists');
 		} catch (e) {
 			showNotification({
@@ -70,7 +76,7 @@ export default function AddPost({ closeAllModals }: AddPostProps) {
 	}
 
 	return (
-		<div>
+		<div className={style.addPostModalContainer}>
 			<TextInput
 				value={title}
 				onChange={(e) => setTitle(e.target.value)}
@@ -92,7 +98,7 @@ export default function AddPost({ closeAllModals }: AddPostProps) {
 				{!image && <DropZone type='post' setImage={setImage} />}
 			</div>
 			<Button onClick={handlePostClick} fullWidth>
-				Post
+				{isLoading ? <Loader /> : 'Post'}
 			</Button>
 		</div>
 	);

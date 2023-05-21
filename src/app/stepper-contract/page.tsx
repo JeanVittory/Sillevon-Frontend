@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import {
 	Stepper,
 	Button,
@@ -20,6 +21,8 @@ import {
 	Accordion,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
+import { DatePicker, TimeInput } from '@mantine/dates';
+import Cookies from 'js-cookie';
 import {
 	IconCheck,
 	IconBug,
@@ -29,64 +32,77 @@ import {
 	IconMinus,
 } from '@tabler/icons-react';
 import Layout from '../../components/Layout';
-import styles from '../styles/StepperContract.module.scss';
-import { GetServerSideProps } from 'next';
+import { useCounterInputStyles } from '../../components/ui/useCounterInput';
+import { stepperContractService } from './service/stepperContractService';
 import { setSlicePrice } from '../../slices/contractSlice';
-import { ConnectionsProps } from '../profile/client/connections';
+import { ConnectionsProps } from '../profile/client/connections/page';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { makeContracts, updateContract, lastUpdateContract } from '../../lib/contracts';
-import Cookies from 'js-cookie';
-import { DatePicker, TimeInput } from '@mantine/dates';
-import { useCounterInputStyles } from '../../components/ui/useCounterInput';
-import { useRouter } from 'next/navigation';
+import styles from '../../styles/StepperContract.module.scss';
 
 interface StepperContractProps extends ConnectionsProps {}
 
 export type AllSongs = { song: string; author: string }[];
 export type RehearsalDate = { schedule: Date; time: any }[];
 
-export default function StepperContract({ user }: StepperContractProps) {
+export default function StepperContract() {
 	const dispatch = useAppDispatch();
 	const totalPrice = useAppSelector((state) => state.contract.price);
+	const router = useRouter();
 	const [active, setActive] = useState(0);
+	const [contractName, setContractName] = useState<string>('');
 	const [loadingStepper, setLoadingStepper] = useState({
 		stepOne: false,
 		stepTwo: false,
 		stepThree: false,
 	});
-	const router = useRouter();
-	const [contractName, setContractName] = useState<string>('');
 	const [schedule, setSchedule] = useState();
 	const [exactTime, setExactTime] = useState<Date | null>();
 	const [recommendations, setRecommendations] = useState<string>('');
 	const [addressInfo, setAddressInfo] = useState<string>('');
-	const handlers = useRef<NumberInputHandlers>(null);
-	const min = 0;
-	const max = 5;
-	const listData = user.connections.map((user) => {
-		return {
-			label: user.userB.name,
-			value: user.userB.email,
-			price: user.userB.price,
-		};
-	});
 	const [numOfRehearsal, setNumOfRehearsal] = useState<number | undefined>(1);
 	const [address, setAddress] = useState<string>('');
-
-	const initialValues: TransferListData = [listData, []];
-	const [data, setData] = useState<TransferListData>(initialValues);
 	const [contracts, setContracts] = useState<any[]>([]);
 	const [repertoire, setRepertoire] = useState({
 		song: '',
 		author: '',
 	});
 	const [allSongs, setAllSongs] = useState<AllSongs>([]);
+	const [user, setUser] = useState<StepperContractProps>();
+	const handlers = useRef<NumberInputHandlers>(null);
+	const min = 0;
+	const max = 5;
+
+	const [data, setData] = useState<TransferListData>();
+
 	const [rehearsalInputsToRender, setRehearsalInputsToRender] = useState<RehearsalDate>([]);
 	const { classes } = useCounterInputStyles();
 
 	useEffect(() => {
-		const total = data[1].reduce((a, b) => a + b.price, 0);
-		dispatch(setSlicePrice({ price: total }));
+		stepperContractService().then((response: any) => {
+			setUser(response);
+		});
+	}, []);
+
+	useEffect(() => {
+		if (user) {
+			const listData = user.user.connections.map((user) => {
+				return {
+					label: user.userB.name,
+					value: user.userB.email,
+					price: user.userB.price,
+				};
+			});
+			const initialValues: TransferListData = [listData, []];
+			setData(initialValues);
+		}
+	}, [user]);
+
+	useEffect(() => {
+		if (data) {
+			const total = data[1].reduce((a, b) => a + b.price, 0);
+			dispatch(setSlicePrice({ price: total }));
+		}
 	}, [data, dispatch]);
 
 	function arrayGenerator(length: number) {
@@ -113,7 +129,7 @@ export default function StepperContract({ user }: StepperContractProps) {
 					...prev,
 					stepOne: true,
 				}));
-				const artists = data[1];
+				const artists = data![1];
 				const res = await makeContracts(artists, contractName, {
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -234,16 +250,20 @@ export default function StepperContract({ user }: StepperContractProps) {
 	};
 	const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
+	if (!user) return <div>Loading</div>;
+
+	console.log(data);
+
 	return (
-		<Layout title='Sillevon | Contract'>
-			<div className={styles.stepperContract}>
-				<Stepper active={active} onStepClick={setActive} breakpoint='sm'>
-					<Stepper.Step
-						loading={loadingStepper.stepOne}
-						label='Selection step'
-						description='Select your Artists/Band'
-						allowStepSelect={active > 0}
-					>
+		<div className={styles.stepperContract}>
+			<Stepper active={active} onStepClick={setActive} breakpoint='sm'>
+				<Stepper.Step
+					loading={loadingStepper.stepOne}
+					label='Selection step'
+					description='Select your Artists/Band'
+					allowStepSelect={active > 0}
+				>
+					<div className={styles.stepOneContainer}>
 						<Center>
 							<TextInput
 								className={styles.inputContractName}
@@ -256,299 +276,277 @@ export default function StepperContract({ user }: StepperContractProps) {
 							/>
 						</Center>
 						<TransferList
-							value={data}
+							value={data!}
 							onChange={setData}
 							searchPlaceholder='Search...'
 							nothingFound='Nothing here'
 							titles={['List of Artists/Band', 'To make a contract']}
 							breakpoint='sm'
 						/>
-					</Stepper.Step>
-					<Stepper.Step
-						loading={loadingStepper.stepTwo}
-						label='Songs and schedule step'
-						description='Set your repetorie and date'
-						allowStepSelect={active > 1}
-					>
-						<div className={styles.stepTwoContainer}>
-							<div className={styles.repertoireContainer}>
-								<div className={styles.inputsSongs}>
-									<TextInput
-										value={repertoire.song}
-										onChange={(e) =>
-											setRepertoire((prev) => ({
-												...prev,
-												song: e.target.value,
-											}))
-										}
-										placeholder='Type the name of your song'
-										className={styles.inputs}
-										radius='xl'
-									/>
-									<TextInput
-										className={styles.inputs}
-										value={repertoire.author}
-										onChange={(e) =>
-											setRepertoire((prev) => ({
-												...prev,
-												author: e.target.value,
-											}))
-										}
-										placeholder='Type the author of the song'
-										radius='xl'
-									/>
-									<Tooltip label='Add song to the list'>
-										<ActionIcon
-											onClick={() => {
-												setAllSongs((prev) => [...prev, repertoire]);
-												setRepertoire({ song: '', author: '' });
-											}}
-										>
-											<IconFilePlus size={35} />
-										</ActionIcon>
-									</Tooltip>
-								</div>
-								<div className={styles.listOfSongs}>
-									<thead className={styles.thead}>
-										<th>Song</th>
-										<th>Author</th>
-									</thead>
-									<tbody>
-										{allSongs.length > 0 ? (
-											allSongs.map((song) => {
-												return (
-													<tr key={`${song.song} - ${song.author}`} className={styles.trow}>
-														<td>{song.song}</td>
-														<td>{song.author}</td>
-													</tr>
-												);
-											})
-										) : (
-											<div className={styles.noSongsMessage}>
-												<Text>There are not songs added</Text>
-											</div>
-										)}
-									</tbody>
-								</div>
+					</div>
+				</Stepper.Step>
+				<Stepper.Step
+					loading={loadingStepper.stepTwo}
+					label='Songs and schedule step'
+					description='Set your repetorie and date'
+					allowStepSelect={active > 1}
+				>
+					<div className={styles.stepTwoContainer}>
+						<div className={styles.repertoireContainer}>
+							<div className={styles.inputsSongs}>
+								<TextInput
+									value={repertoire.song}
+									onChange={(e) =>
+										setRepertoire((prev) => ({
+											...prev,
+											song: e.target.value,
+										}))
+									}
+									placeholder='Type the name of your song'
+									className={styles.inputs}
+									radius='xl'
+								/>
+								<TextInput
+									className={styles.inputs}
+									value={repertoire.author}
+									onChange={(e) =>
+										setRepertoire((prev) => ({
+											...prev,
+											author: e.target.value,
+										}))
+									}
+									placeholder='Type the author of the song'
+									radius='xl'
+								/>
+								<Tooltip label='Add song to the list'>
+									<ActionIcon
+										onClick={() => {
+											setAllSongs((prev) => [...prev, repertoire]);
+											setRepertoire({ song: '', author: '' });
+										}}
+									>
+										<IconFilePlus size={35} />
+									</ActionIcon>
+								</Tooltip>
 							</div>
-							<Divider my='sm' orientation='vertical' />
-							<div className={styles.datePickersContainer}>
-								<div className={styles.dateInputs}>
-									<DatePicker
-										placeholder='Pick date'
-										value={schedule}
-										onChange={() => setSchedule(schedule)}
-									/>
-									<TimeInput
-										label='Pick time'
-										placeholder='Pick time'
-										icon={<IconClock size={16} />}
-										value={exactTime?.toString()}
-										onChange={() => setExactTime(exactTime)}
-									/>
-								</div>
-								<Divider my='sm' />
-								<div>
-									<Textarea
-										label='Your recommendations'
-										placeholder='If you want to make some recommendations'
-										minRows={4}
-										mt='md'
-										value={recommendations}
-										onChange={(e) => setRecommendations(e.target.value)}
-									/>
-								</div>
-							</div>
-						</div>
-					</Stepper.Step>
-					<Stepper.Step
-						loading={loadingStepper.stepThree}
-						label='Set lasts details'
-						description='Provide the last data'
-						allowStepSelect={active > 2}
-					>
-						<div className={styles.rehearalContainer}>
-							<div className={styles.leftSideContainer}>
-								<div className={styles.inputCounterRehearsal}>
-									<Text>Set the rehearsals number</Text>
-									<div className={classes.wrapper}>
-										<ActionIcon<'button'>
-											size={28}
-											variant='transparent'
-											onClick={() => {
-												handlers.current?.decrement();
-												if (typeof numOfRehearsal === 'number' && typeof totalPrice === 'number') {
-													const currentRehearsalPrice = 8;
-													const newPrice = totalPrice - currentRehearsalPrice;
-													dispatch(setSlicePrice({ price: newPrice }));
-												}
-											}}
-											disabled={numOfRehearsal === min}
-											className={classes.control}
-											onMouseDown={(event) => event.preventDefault()}
-										>
-											<IconMinus size={16} stroke={1.5} />
-										</ActionIcon>
-										<NumberInput
-											variant='unstyled'
-											min={min}
-											max={max}
-											handlersRef={handlers}
-											value={numOfRehearsal}
-											onChange={() => setNumOfRehearsal(numOfRehearsal)}
-											classNames={{ input: classes.input }}
-										/>
-										<ActionIcon<'button'>
-											size={28}
-											variant='transparent'
-											onClick={() => {
-												handlers.current?.increment();
-												if (typeof numOfRehearsal === 'number' && typeof totalPrice === 'number') {
-													const currentRehearsalPrice = contracts.length * 8 * numOfRehearsal;
-													const newPrice = totalPrice + currentRehearsalPrice;
-													dispatch(setSlicePrice({ price: newPrice }));
-												}
-											}}
-											disabled={numOfRehearsal === max}
-											className={classes.control}
-											onMouseDown={(event) => event.preventDefault()}
-										>
-											<IconPlus size={16} stroke={1.5} />
-										</ActionIcon>
-									</div>
-								</div>
-								<div className={styles.listOfRehearsals}>
-									{rehearsalInputsToRender.length > 0 ? (
-										rehearsalInputsToRender.map((item, i) => {
+							<div className={styles.listOfSongs}>
+								<thead className={styles.thead}>
+									<th>Song</th>
+									<th>Author</th>
+								</thead>
+								<tbody>
+									{allSongs.length > 0 ? (
+										allSongs.map((song) => {
 											return (
-												<div className={styles.dateInputs} key={`${i}inputs`}>
-													<DatePicker
-														placeholder='Pick date'
-														value={item.schedule}
-														onChange={(date) =>
-															setRehearsalInputsToRender((prev) => {
-																if (date !== null) {
-																	prev[i].schedule = date;
-																}
-																return prev;
-															})
-														}
-													/>
-													<TimeInput
-														label='Pick time'
-														placeholder='Rehearsal date'
-														icon={<IconClock size={16} />}
-														value={item.time.toString()}
-														onChange={(time) =>
-															setRehearsalInputsToRender((prev) => {
-																if (time !== null) {
-																	prev[i].time = time;
-																}
-																return prev;
-															})
-														}
-													/>
-												</div>
+												<tr key={`${song.song} - ${song.author}`} className={styles.trow}>
+													<td>{song.song}</td>
+													<td>{song.author}</td>
+												</tr>
 											);
 										})
 									) : (
 										<div className={styles.noSongsMessage}>
-											<Text>There are not rehearsals added</Text>
+											<Text>There are not songs added</Text>
 										</div>
 									)}
-								</div>
+								</tbody>
 							</div>
-							<Divider my='sm' orientation='vertical' />
-							<div className={styles.rightSideContainer}>
-								<TextInput
-									label='Event address'
-									placeholder='15329 Huston 21st'
-									value={address}
-									withAsterisk
-									className={styles.addressInput}
-									onChange={(e) => setAddress(e.target.value)}
+						</div>
+						<Divider my='sm' orientation='vertical' />
+						<div className={styles.datePickersContainer}>
+							<div className={styles.dateInputs}>
+								<DatePicker
+									placeholder='Pick date'
+									value={schedule}
+									onChange={() => setSchedule(schedule)}
 								/>
+								<TimeInput
+									label='Pick time'
+									placeholder='Pick time'
+									icon={<IconClock size={16} />}
+									value={exactTime}
+									onChange={() => setExactTime(exactTime)}
+								/>
+							</div>
+							<Divider my='sm' />
+							<div>
 								<Textarea
-									label='Address aditional info'
-									placeholder='Provide more details directions about the event address'
+									label='Your recommendations'
+									placeholder='If you want to make some recommendations'
 									minRows={4}
-									className={styles.addressInfo}
 									mt='md'
-									value={addressInfo}
-									onChange={(e) => setAddressInfo(e.target.value)}
+									value={recommendations}
+									onChange={(e) => setRecommendations(e.target.value)}
 								/>
 							</div>
 						</div>
-					</Stepper.Step>
-					<Stepper.Completed>
-						<Card withBorder radius='md' p='xl' className={styles.cardContainer}>
-							<Group className={styles.acordionContainer}>
-								<Accordion
-									className={styles.acordion}
-									variant='contained'
-									radius='lg'
-									defaultValue='customization'
-								>
-									{contracts.length > 0 &&
-										contracts.map((contract) => {
-											return (
-												<Accordion.Item value={contract.artist.name} key={contract._id}>
-													<Accordion.Control>{contract.artist.name}</Accordion.Control>
-													<Accordion.Panel>
-														<Text>Instrument: {contract.artist.instrument}</Text>
-														<Text>Style: {contract.artist.genre}</Text>
-														<Text>City: {contract.artist.city}</Text>
-														<Text>Price: ${contract.artist.price} /hr</Text>
-													</Accordion.Panel>
-												</Accordion.Item>
-											);
-										})}
-								</Accordion>
-							</Group>
-							<Divider my='sm' orientation='vertical' />
-							<div className={styles.contractDataContainer}>
-								<Text>Total price: ${contracts.reduce((a, b) => a + b.price, 0)}</Text>
-								<Button onClick={() => router.push('/profile/client')}>Go to profile</Button>
+					</div>
+				</Stepper.Step>
+				<Stepper.Step
+					loading={loadingStepper.stepThree}
+					label='Set lasts details'
+					description='Provide the last data'
+					allowStepSelect={active > 2}
+				>
+					<div className={styles.rehearalContainer}>
+						<div className={styles.leftSideContainer}>
+							<div className={styles.inputCounterRehearsal}>
+								<Text>Set the rehearsals number</Text>
+								<div className={classes.wrapper}>
+									<ActionIcon<'button'>
+										size={28}
+										variant='transparent'
+										onClick={() => {
+											handlers.current?.decrement();
+											if (typeof numOfRehearsal === 'number' && typeof totalPrice === 'number') {
+												const currentRehearsalPrice = 8;
+												const newPrice = totalPrice - currentRehearsalPrice;
+												dispatch(setSlicePrice({ price: newPrice }));
+											}
+										}}
+										disabled={numOfRehearsal === min}
+										className={classes.control}
+										onMouseDown={(event) => event.preventDefault()}
+									>
+										<IconMinus size={16} stroke={1.5} />
+									</ActionIcon>
+									<NumberInput
+										variant='unstyled'
+										min={min}
+										max={max}
+										handlersRef={handlers}
+										value={numOfRehearsal}
+										onChange={() => setNumOfRehearsal(numOfRehearsal)}
+										classNames={{ input: classes.input }}
+									/>
+									<ActionIcon<'button'>
+										size={28}
+										variant='transparent'
+										onClick={() => {
+											handlers.current?.increment();
+											if (typeof numOfRehearsal === 'number' && typeof totalPrice === 'number') {
+												const currentRehearsalPrice = contracts.length * 8 * numOfRehearsal;
+												const newPrice = totalPrice + currentRehearsalPrice;
+												dispatch(setSlicePrice({ price: newPrice }));
+											}
+										}}
+										disabled={numOfRehearsal === max}
+										className={classes.control}
+										onMouseDown={(event) => event.preventDefault()}
+									>
+										<IconPlus size={16} stroke={1.5} />
+									</ActionIcon>
+								</div>
 							</div>
-						</Card>
-					</Stepper.Completed>
-				</Stepper>
-				{active === 3 ? null : (
-					<Center>
-						<Text>Total price: ${totalPrice} /hr</Text>
-					</Center>
-				)}
-				{active === 3 ? null : (
-					<Group position='center' mt='xl'>
-						<Button variant='default' onClick={prevStep}>
-							Back
-						</Button>
-						<Button onClick={nextStep}>Next step</Button>
-					</Group>
-				)}
-			</div>
-		</Layout>
+							<div className={styles.listOfRehearsals}>
+								{rehearsalInputsToRender.length > 0 ? (
+									rehearsalInputsToRender.map((item, i) => {
+										return (
+											<div className={styles.dateInputs} key={`${i}inputs`}>
+												<DatePicker
+													placeholder='Pick date'
+													value={item.schedule}
+													onChange={(date) =>
+														setRehearsalInputsToRender((prev) => {
+															if (date !== null) {
+																prev[i].schedule = date;
+															}
+															return prev;
+														})
+													}
+												/>
+												<TimeInput
+													label='Pick time'
+													placeholder='Rehearsal date'
+													icon={<IconClock size={16} />}
+													value={item.time.toString()}
+													onChange={(time) =>
+														setRehearsalInputsToRender((prev) => {
+															if (time !== null) {
+																prev[i].time = time;
+															}
+															return prev;
+														})
+													}
+												/>
+											</div>
+										);
+									})
+								) : (
+									<div className={styles.noSongsMessage}>
+										<Text>There are not rehearsals added</Text>
+									</div>
+								)}
+							</div>
+						</div>
+						<Divider my='sm' orientation='vertical' />
+						<div className={styles.rightSideContainer}>
+							<TextInput
+								label='Event address'
+								placeholder='15329 Huston 21st'
+								value={address}
+								withAsterisk
+								className={styles.addressInput}
+								onChange={(e) => setAddress(e.target.value)}
+							/>
+							<Textarea
+								label='Address aditional info'
+								placeholder='Provide more details directions about the event address'
+								minRows={4}
+								className={styles.addressInfo}
+								mt='md'
+								value={addressInfo}
+								onChange={(e) => setAddressInfo(e.target.value)}
+							/>
+						</div>
+					</div>
+				</Stepper.Step>
+				<Stepper.Completed>
+					<Card withBorder radius='md' p='xl' className={styles.cardContainer}>
+						<Group className={styles.acordionContainer}>
+							<Accordion
+								className={styles.acordion}
+								variant='contained'
+								radius='lg'
+								defaultValue='customization'
+							>
+								{contracts.length > 0 &&
+									contracts.map((contract) => {
+										return (
+											<Accordion.Item value={contract.artist.name} key={contract._id}>
+												<Accordion.Control>{contract.artist.name}</Accordion.Control>
+												<Accordion.Panel>
+													<Text>Instrument: {contract.artist.instrument}</Text>
+													<Text>Style: {contract.artist.genre}</Text>
+													<Text>City: {contract.artist.city}</Text>
+													<Text>Price: ${contract.artist.price} /hr</Text>
+												</Accordion.Panel>
+											</Accordion.Item>
+										);
+									})}
+							</Accordion>
+						</Group>
+						<Divider my='sm' orientation='vertical' />
+						<div className={styles.contractDataContainer}>
+							<Text>Total price: ${contracts.reduce((a, b) => a + b.price, 0)}</Text>
+							<Button onClick={() => router.push('/profile/client')}>Go to profile</Button>
+						</div>
+					</Card>
+				</Stepper.Completed>
+			</Stepper>
+			{active === 3 ? null : (
+				<Center>
+					<Text>Total price: ${totalPrice} /hr</Text>
+				</Center>
+			)}
+			{active === 3 ? null : (
+				<Group position='center' mt='xl'>
+					<Button variant='default' onClick={prevStep}>
+						Back
+					</Button>
+					<Button onClick={nextStep}>Next step</Button>
+				</Group>
+			)}
+		</div>
 	);
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const token = context.req.cookies['sillusr'];
-	let userData;
-	try {
-		const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-			cache: 'no-store',
-		});
-		userData = await res.json();
-	} catch (e) {
-		userData = { data: 'Token has expired' };
-	}
-	return {
-		props: {
-			user: userData.data,
-		},
-	};
-};

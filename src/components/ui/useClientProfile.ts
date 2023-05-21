@@ -5,6 +5,7 @@ export const useClientProfile = createStyles((theme, _params) => {
 	return {
 		navContainer: {
 			zIndex: 0,
+			height: '100%',
 		},
 		header: {
 			paddingBottom: theme.spacing.md,
@@ -29,7 +30,7 @@ export const useClientProfile = createStyles((theme, _params) => {
 			textDecoration: 'none',
 			fontSize: theme.fontSizes.sm,
 			color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
-			padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
+			padding: 0,
 			borderRadius: theme.radius.sm,
 			fontWeight: 500,
 			width: '100%',

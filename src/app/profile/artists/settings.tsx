@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { IconLock, IconCheck, IconBug, IconUser, IconChevronLeft } from '@tabler/icons-react';
 import { useState } from 'react';
-import { ConnectionsProps } from '../client/connections';
+import { ConnectionsProps } from '../client/connections/page';
 import { GetServerSideProps } from 'next';
 import styles from '../../../styles/SettingsArtists.module.scss';
 import { updatedSettings, updatedSettingsRegular } from '../../../lib/userdata';

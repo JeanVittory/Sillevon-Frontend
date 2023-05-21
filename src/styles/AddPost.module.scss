@@ -1,9 +1,15 @@
 .postModalImage {
-  border-radius: 0.5rem;
+	border-radius: 0.5rem;
+	object-fit: cover;
+	width: 100%;
 }
 .postModalDropZone {
-  margin-bottom: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 .imagePostPreview {
-  margin-top: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.addPostModalContainer {
+	z-index: 99999;
 }

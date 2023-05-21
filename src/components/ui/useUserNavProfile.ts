@@ -14,6 +14,7 @@ export const useUserNavProfile = createStyles((theme, _params) => {
 
 		navbarArtist: {
 			height: '100%',
+			zIndex: 1,
 		},
 
 		footer: {

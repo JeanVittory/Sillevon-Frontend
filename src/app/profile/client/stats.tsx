@@ -3,7 +3,7 @@ import { ContractStats } from '../../../components/ContractStats';
 import ClientLayout from '../../../components/ClientLayout';
 import { GetServerSideProps } from 'next';
 import styles from '../../../styles/StatsPage.module.scss';
-import { ConnectionsProps } from './connections';
+import { ConnectionsProps } from './connections/page';
 import { StatsRing } from '../../../components/StatsRing';
 import { Divider, Text } from '@mantine/core';
 

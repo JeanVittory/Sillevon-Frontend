@@ -55,6 +55,7 @@ export default function Client() {
 				<Loading />
 			</div>
 		);
+
 	const posters = postsToRender?.post?.map((post: any, i: number) => {
 		if (postsToRender?.post.length === i + 1) {
 			return (

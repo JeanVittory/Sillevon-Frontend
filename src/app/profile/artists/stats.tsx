@@ -4,7 +4,7 @@ import Layout from '../../../components/Layout';
 import { ContractStats } from '../../../components/ContractStats';
 import { GetServerSideProps } from 'next';
 import styles from '../../../styles/ArtistStats.module.scss';
-import { ConnectionsProps } from '../client/connections';
+import { ConnectionsProps } from '../client/connections/page';
 import { StatsRing } from '../../../components/StatsRing';
 import { IconChevronLeft } from '@tabler/icons-react';
 import { Divider, UnstyledButton, Text } from '@mantine/core';
