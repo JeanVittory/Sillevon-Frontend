@@ -60,7 +60,7 @@ export interface ArtistProfileClientProps {
 }
 
 const ArtistProfileClient = ({ params }: any) => {
-	const [connections, setConnections] = useState<[]>();
+	const [connections, setConnections] = useState<[]>([]);
 	const [user, setUser] = useState<ArtistProfileClientProps>();
 	const [mockData, setMockData] = useState<any>();
 	const [data, setData] = useState<any>();

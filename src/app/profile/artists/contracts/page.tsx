@@ -1,22 +1,37 @@
 'use client';
 
-import { GetServerSideProps } from 'next';
-import React from 'react';
-import Layout from '../../../components/Layout';
-import styles from '../../../styles/ArtistsContracts.module.scss';
-import { ConnectionsProps } from '../client/connections';
-import { Accordion, Text, Button, UnstyledButton } from '@mantine/core';
-import { acceptContract } from '../../../lib/contracts';
-import Cookies from 'js-cookie';
-import { IconCheck, IconBug, IconChevronLeft } from '@tabler/icons-react';
-import { showNotification } from '@mantine/notifications';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Accordion, Text, Button, UnstyledButton } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
+import { IconCheck, IconBug, IconChevronLeft } from '@tabler/icons-react';
+import Cookies from 'js-cookie';
+import Layout from '../../../../components/Layout';
+import { Loader } from '../../../../components/Loader';
+import { ConnectionsProps } from '../../client/connections/page';
+import { acceptContract } from '../../../../lib/contracts';
+import { contractsService } from './service/contracts';
+import styles from '../../../../styles/ArtistsContracts.module.scss';
 
 interface ContractsArtistsProps extends ConnectionsProps {}
 
-export default function ContractsArtists({ user }: ContractsArtistsProps) {
+export default function ContractsArtists() {
+	const [user, setUser] = useState<ContractsArtistsProps>();
 	const token = Cookies.get('sillusr');
 	const router = useRouter();
+
+	useEffect(() => {
+		contractsService().then((response: any) => {
+			setUser(response);
+		});
+	});
+
+	if (!user)
+		return (
+			<div>
+				<Loader />
+			</div>
+		);
 	return (
 		<Layout>
 			<div className={styles.artistsContractsContainer}>
@@ -35,8 +50,8 @@ export default function ContractsArtists({ user }: ContractsArtistsProps) {
 					Contracts
 				</Text>
 				<Accordion variant='contained' radius='md'>
-					{user.contracts.length > 0 ? (
-						user.contracts.map((contract) => {
+					{user.user.contracts.length > 0 ? (
+						user.user.contracts.map((contract) => {
 							const day = new Date(contract.schedule).getDate();
 							const month = new Date(contract.schedule).getMonth() + 1;
 							const year = new Date(contract.schedule).getFullYear();
@@ -94,20 +109,3 @@ export default function ContractsArtists({ user }: ContractsArtistsProps) {
 		</Layout>
 	);
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const token = context.req.cookies['sillusr'];
-	let userData;
-	if (token) {
-		const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-		userData = await res.json();
-	}
-	return {
-		props: { user: userData.data },
-	};
-};

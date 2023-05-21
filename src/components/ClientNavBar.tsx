@@ -70,9 +70,6 @@ export function ClientNavbar({}: ClientNavBarProps) {
 					<Text>{username}</Text>
 				</Group>
 				{links}
-			</Navbar.Section>
-
-			<Navbar.Section className={classes.footer}>
 				<Button
 					variant='outline'
 					className={classes.link}

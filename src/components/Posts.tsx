@@ -1,16 +1,16 @@
 'use client';
 
-import styles from '../styles/Posts.module.scss';
-import Image from 'next/image';
-import { ActionIcon, Avatar, Group, Text } from '@mantine/core';
-import { IconHeart, IconMessageDots, IconCheck, IconBug } from '@tabler/icons-react';
 import { useState } from 'react';
-import { openModal, closeAllModals } from '@mantine/modals';
-import Comments from './Comments';
+import Image from 'next/image';
 import axios from 'axios';
-import Cookies from 'js-cookie';
-import Login from './Login';
+import { IconHeart, IconMessageDots, IconCheck, IconBug } from '@tabler/icons-react';
+import { openModal, closeAllModals } from '@mantine/modals';
+import { ActionIcon, Avatar, Group, Text } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
+import Cookies from 'js-cookie';
+import Comments from './Comments';
+import Login from './Login';
+import styles from '../styles/Posts.module.scss';
 
 interface PostsProps {
 	user?: any;
@@ -98,7 +98,14 @@ export default function Posts({
 				</Group>
 			)}
 			<div className={styles.postsImageContainer}>
-				<Image src={urlImage} alt={title} width={700} height={500} className={styles.postsImage} />
+				<Image
+					src={urlImage}
+					alt={title}
+					width={700}
+					height={700}
+					className={styles.postsImage}
+					priority
+				/>
 			</div>
 			<p className={styles.postFooter}>{title}</p>
 			<div className={styles.postsInfo}>

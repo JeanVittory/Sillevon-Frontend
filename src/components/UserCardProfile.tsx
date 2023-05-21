@@ -79,9 +79,10 @@ interface UserCardProfileProps {
 		connections: any[];
 		contracts: [];
 	};
+	setReFetch: any;
 }
 
-export function UserCardProfile({}: UserCardProfileProps) {
+export function UserCardProfile({ setReFetch }: UserCardProfileProps) {
 	const { classes, cx } = useUserNavProfile();
 	const [active, setActive] = useState('');
 	const router = useRouter();
@@ -104,7 +105,7 @@ export function UserCardProfile({}: UserCardProfileProps) {
 				if (item.label === 'Add a Post') {
 					openModal({
 						title: 'Add a post',
-						children: <AddPost closeAllModals={closeAllModals} />,
+						children: <AddPost closeAllModals={closeAllModals} setReFetch={setReFetch} />,
 					});
 				} else if (item.label === 'Connections') {
 					router.push('/profile/artists/connections');
