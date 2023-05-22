@@ -24,23 +24,25 @@ export default function Contracts() {
 	const [namesOfContracts, setNamesOfContracts] = useState<string[]>([]);
 	const [user, setUser] = useState<ContractsProps>();
 
-	let prevName = 'name';
-	if (user) {
-		for (let i = 0; i < user.user.contracts.length; i++) {
-			let nextName = user.user.contracts[i].contractName;
-			if (nextName !== prevName) {
-				setNamesOfContracts([...namesOfContracts, nextName]);
-				//namesOfContractsToRender.push(nextName);
-				prevName = nextName;
+	useEffect(() => {
+		let prevName = 'name';
+		if (user) {
+			for (let i = 0; i < user.user.contracts.length; i++) {
+				let nextName = user.user.contracts[i].contractName;
+				if (nextName !== prevName) {
+					setNamesOfContracts([...namesOfContracts, nextName]);
+					//namesOfContractsToRender.push(nextName);
+					prevName = nextName;
+				}
 			}
 		}
-	}
+	}, [user]);
 
 	useEffect(() => {
 		contractsUser().then((response: any) => {
 			setUser(response);
 		});
-	});
+	}, []);
 
 	const openModal = (contractId: string) =>
 		openConfirmModal({

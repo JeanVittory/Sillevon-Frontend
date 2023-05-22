@@ -19,7 +19,6 @@ import { showNotification } from '@mantine/notifications';
 import Cookies from 'js-cookie';
 import { IconCheck, IconTrash, IconBug, IconChevronLeft } from '@tabler/icons-react';
 import { updateConnections, deleteConnection } from '../../../../lib/connections';
-import Layout from '../../../../components/Layout';
 import { Loader } from '../../../../components/Loader';
 import { connectionsArtistService } from './service/connections';
 import styles from '../../../../styles/ConnectionsArtists.module.scss';
@@ -85,7 +84,7 @@ export default function ConnectionClient() {
 	const theme = useMantineTheme();
 	const [connections, setConnections] = useState<any>();
 	const [user, setUser] = useState<ConnectionsProps>();
-	const [rows, setRows] = useState();
+	const [rows, setRows] = useState(null);
 
 	useEffect(() => {
 		connectionsArtistService().then((response) => {
@@ -95,7 +94,7 @@ export default function ConnectionClient() {
 	}, []);
 
 	useEffect(() => {
-		if (user) {
+		if (connections?.length > 0) {
 			const rows = connections.map((item: any) => (
 				<tr key={item._id}>
 					<td>
@@ -121,13 +120,8 @@ export default function ConnectionClient() {
 						</Anchor>
 					</td>
 					<td>
-						<Text size='sm' color='dimmed'>
-							{item.userA.price} /hr
-						</Text>
-					</td>
-					<td>
 						<Group spacing={0} position='right'>
-							{!item.done || item.userA._id === user!.user._id ? (
+							{!item.done || item?.userA?._id === user!?.user?._id ? (
 								<ActionIcon onClick={() => handleCheckClick(item._id)}>
 									<IconCheck size={16} stroke={1.5} />
 								</ActionIcon>
@@ -141,7 +135,7 @@ export default function ConnectionClient() {
 			));
 			setRows(rows);
 		}
-	}, []);
+	}, [connections]);
 
 	async function handleCheckClick(id: string) {
 		const token = Cookies.get('sillusr');
@@ -151,7 +145,9 @@ export default function ConnectionClient() {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			const newConnections = connections!.filter((item: any) => item._id !== id);
+			const newConnections = connections!.filter((item: any) => {
+				return item._id !== id;
+			});
 			newConnections.unshift(connection.data);
 			setConnections(newConnections);
 			showNotification({
@@ -162,7 +158,8 @@ export default function ConnectionClient() {
 				icon: <IconCheck size={16} />,
 				autoClose: 4000,
 			});
-		} catch {
+		} catch (e) {
+			console.log(e);
 			showNotification({
 				id: 'load-data-user',
 				color: 'red',
@@ -228,13 +225,11 @@ export default function ConnectionClient() {
 				Connections
 			</Text>
 			<ScrollArea>
-				<Table sx={{ minWidth: 800 }} verticalSpacing='sm'>
+				<Table sx={{ minWidth: 400 }} verticalSpacing='sm'>
 					<thead>
 						<tr>
 							<th>Users</th>
 							<th>Status</th>
-							<th>Genre</th>
-							<th>Price</th>
 							<th />
 						</tr>
 					</thead>

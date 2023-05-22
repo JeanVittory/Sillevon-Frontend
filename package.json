@@ -14,7 +14,7 @@
 		"@emotion/server": "11.11.0",
 		"@mantine/carousel": "6.0.10",
 		"@mantine/core": "6.0.10",
-		"@mantine/dates": "5.6.4",
+		"@mantine/dates": "6.0.10",
 		"@mantine/dropzone": "6.0.10",
 		"@mantine/ds": "6.0.10",
 		"@mantine/form": "6.0.10",
