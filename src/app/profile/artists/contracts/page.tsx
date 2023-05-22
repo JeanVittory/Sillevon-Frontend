@@ -24,7 +24,7 @@ export default function ContractsArtists() {
 		contractsService().then((response: any) => {
 			setUser(response);
 		});
-	});
+	}, []);
 
 	if (!user)
 		return (
@@ -32,6 +32,7 @@ export default function ContractsArtists() {
 				<Loader />
 			</div>
 		);
+
 	return (
 		<Layout>
 			<div className={styles.artistsContractsContainer}>

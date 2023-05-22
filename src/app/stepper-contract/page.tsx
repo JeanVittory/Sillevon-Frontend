@@ -31,8 +31,9 @@ import {
 	IconPlus,
 	IconMinus,
 } from '@tabler/icons-react';
-import Layout from '../../components/Layout';
+
 import { useCounterInputStyles } from '../../components/ui/useCounterInput';
+import { Loader } from '../../components/Loader';
 import { stepperContractService } from './service/stepperContractService';
 import { setSlicePrice } from '../../slices/contractSlice';
 import { ConnectionsProps } from '../profile/client/connections/page';
@@ -101,6 +102,7 @@ export default function StepperContract() {
 	useEffect(() => {
 		if (data) {
 			const total = data[1].reduce((a, b) => a + b.price, 0);
+
 			dispatch(setSlicePrice({ price: total }));
 		}
 	}, [data, dispatch]);
@@ -250,9 +252,12 @@ export default function StepperContract() {
 	};
 	const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
-	if (!user) return <div>Loading</div>;
-
-	console.log(data);
+	if (!user || !data)
+		return (
+			<div className={styles.loaderContainer}>
+				<Loader />
+			</div>
+		);
 
 	return (
 		<div className={styles.stepperContract}>
