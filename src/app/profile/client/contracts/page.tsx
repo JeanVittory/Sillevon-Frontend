@@ -19,7 +19,6 @@ interface ContractsProps extends ConnectionsProps {}
 
 export default function Contracts() {
 	const router = useRouter();
-	//const namesOfContractsToRender: string[] = [];
 	const token = Cookies.get('sillusr');
 	const [namesOfContracts, setNamesOfContracts] = useState<string[]>([]);
 	const [user, setUser] = useState<ContractsProps>();
@@ -31,7 +30,6 @@ export default function Contracts() {
 				let nextName = user.user.contracts[i].contractName;
 				if (nextName !== prevName) {
 					setNamesOfContracts([...namesOfContracts, nextName]);
-					//namesOfContractsToRender.push(nextName);
 					prevName = nextName;
 				}
 			}
