@@ -21,7 +21,7 @@ import {
 	Accordion,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { DatePicker, TimeInput } from '@mantine/dates';
+import { DatePickerInput, TimeInput } from '@mantine/dates';
 import Cookies from 'js-cookie';
 import {
 	IconCheck,
@@ -57,7 +57,7 @@ export default function StepperContract() {
 		stepTwo: false,
 		stepThree: false,
 	});
-	const [schedule, setSchedule] = useState();
+	const [schedule, setSchedule] = useState<Date | null>();
 	const [exactTime, setExactTime] = useState<Date | null>();
 	const [recommendations, setRecommendations] = useState<string>('');
 	const [addressInfo, setAddressInfo] = useState<string>('');
@@ -252,6 +252,30 @@ export default function StepperContract() {
 	};
 	const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
+	const onChangeDate = (date: any, i: any) => {
+		if (date !== null) {
+			const newDate = rehearsalInputsToRender.map((rehearsal, index) => {
+				if (index === i) {
+					return { ...rehearsal, ['schedule']: date };
+				}
+				return { ...rehearsal };
+			});
+			setRehearsalInputsToRender(newDate as RehearsalDate);
+		}
+	};
+
+	const onchangeTime = (time: any, i: any) => {
+		if (time !== null) {
+			const newTime = rehearsalInputsToRender.map((rehearsal, index) => {
+				if (index === i) {
+					return { ...rehearsal, ['time']: time };
+				}
+				return rehearsal;
+			});
+			setRehearsalInputsToRender(newTime as RehearsalDate);
+		}
+	};
+
 	if (!user || !data)
 		return (
 			<div className={styles.loaderContainer}>
@@ -360,16 +384,21 @@ export default function StepperContract() {
 						<Divider my='sm' orientation='vertical' />
 						<div className={styles.datePickersContainer}>
 							<div className={styles.dateInputs}>
-								<DatePicker
-									placeholder='Pick date'
+								<DatePickerInput
+									label='Pick date'
+									placeholder='Select'
 									value={schedule}
-									onChange={() => setSchedule(schedule)}
+									onChange={(value) => {
+										setSchedule(value);
+									}}
+									defaultDate={new Date()}
+									minDate={new Date()}
 								/>
 								<TimeInput
 									label='Pick time'
 									placeholder='Pick time'
 									icon={<IconClock size={16} />}
-									value={exactTime}
+									value={exactTime?.toString()}
 									onChange={() => setExactTime(exactTime)}
 								/>
 							</div>
@@ -421,7 +450,9 @@ export default function StepperContract() {
 										max={max}
 										handlersRef={handlers}
 										value={numOfRehearsal}
-										onChange={() => setNumOfRehearsal(numOfRehearsal)}
+										onChange={(value) => {
+											setNumOfRehearsal(+value);
+										}}
 										classNames={{ input: classes.input }}
 									/>
 									<ActionIcon<'button'>
@@ -448,31 +479,21 @@ export default function StepperContract() {
 									rehearsalInputsToRender.map((item, i) => {
 										return (
 											<div className={styles.dateInputs} key={`${i}inputs`}>
-												<DatePicker
-													placeholder='Pick date'
-													value={item.schedule}
-													onChange={(date) =>
-														setRehearsalInputsToRender((prev) => {
-															if (date !== null) {
-																prev[i].schedule = date;
-															}
-															return prev;
-														})
-													}
+												<DatePickerInput
+													label='Pick date'
+													placeholder='Select'
+													value={item?.schedule}
+													onChange={(date) => onChangeDate(date, i)}
+													minDate={new Date()}
 												/>
 												<TimeInput
 													label='Pick time'
 													placeholder='Rehearsal date'
 													icon={<IconClock size={16} />}
-													value={item.time.toString()}
-													onChange={(time) =>
-														setRehearsalInputsToRender((prev) => {
-															if (time !== null) {
-																prev[i].time = time;
-															}
-															return prev;
-														})
-													}
+													value={exactTime?.toString()}
+													onChange={() => {
+														onchangeTime(exactTime, i);
+													}}
 												/>
 											</div>
 										);

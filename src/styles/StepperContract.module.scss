@@ -77,7 +77,9 @@
 .datePickersContainer {
 	padding: 0.5rem;
 	width: 35rem;
+	align-self: flex-start;
 }
+
 .dateInputs {
 	display: flex;
 	justify-content: space-around;

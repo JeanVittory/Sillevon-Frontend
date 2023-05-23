@@ -159,7 +159,6 @@ export default function ConnectionClient() {
 				autoClose: 4000,
 			});
 		} catch (e) {
-			console.log(e);
 			showNotification({
 				id: 'load-data-user',
 				color: 'red',

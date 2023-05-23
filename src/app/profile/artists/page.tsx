@@ -64,8 +64,6 @@ export default function ArtistsProfile() {
 			</div>
 		);
 
-	//dispatch(setAvatar({ avatar: user?.imagesDone?.avatar }));
-
 	return (
 		<div className={styles.artistsProfileContainer}>
 			<div className={styles.userProfileCardInfo}>
