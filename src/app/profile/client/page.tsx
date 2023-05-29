@@ -59,7 +59,7 @@ export default function Client() {
 	const posters = postsToRender?.post?.map((post: any, i: number) => {
 		if (postsToRender?.post.length === i + 1) {
 			return (
-				<div ref={lastPosts} key={post._id}>
+				<div ref={lastPosts} key={post._id} className={styles.posters}>
 					<Posts
 						user={post.user}
 						postId={post._id}
@@ -72,7 +72,7 @@ export default function Client() {
 			);
 		} else {
 			return (
-				<div key={post._id}>
+				<div key={post._id} className={styles.posters}>
 					<Posts
 						user={post.user}
 						postId={post._id}

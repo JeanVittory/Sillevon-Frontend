@@ -127,6 +127,11 @@ export default function Connections() {
 					</td>
 					<td>
 						<Anchor<'a'> size='sm' href='#' onClick={(event) => event.preventDefault()}>
+							{item.userB.instrument}
+						</Anchor>
+					</td>
+					<td>
+						<Anchor<'a'> size='sm' href='#' onClick={(event) => event.preventDefault()}>
 							{item.userB.genre}
 						</Anchor>
 					</td>
@@ -151,7 +156,7 @@ export default function Connections() {
 			));
 			setRows(rows);
 		}
-	}, []);
+	}, [connections]);
 
 	async function handleCheckClick(id: string) {
 		const token = Cookies.get('sillusr');
@@ -241,6 +246,7 @@ export default function Connections() {
 							<thead>
 								<tr>
 									<th>Artist/Band</th>
+									<th>status</th>
 									<th>Instrument</th>
 									<th>Genre</th>
 									<th>Price</th>

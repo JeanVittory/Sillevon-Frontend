@@ -25,12 +25,13 @@ export const useClientProfile = createStyles((theme, _params) => {
 
 		link: {
 			...theme.fn.focusStyles(),
+			height: '100%',
 			display: 'flex',
 			alignItems: 'center',
 			textDecoration: 'none',
 			fontSize: theme.fontSizes.sm,
 			color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
-			padding: 0,
+			padding: '1rem',
 			borderRadius: theme.radius.sm,
 			fontWeight: 500,
 			width: '100%',

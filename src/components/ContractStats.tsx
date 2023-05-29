@@ -73,7 +73,7 @@ export function ContractStats({ contracts }: ContractStatsProps) {
 	const amountBymonth = [];
 	for (let i = 0; i < labels.length; i++) {
 		let counter = 0;
-		contracts.forEach((contract) => {
+		contracts?.forEach((contract) => {
 			if (new Date(contract.createdAt).getMonth() === i) {
 				counter += 1;
 			}
