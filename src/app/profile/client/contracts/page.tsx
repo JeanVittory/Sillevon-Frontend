@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { GetServerSideProps } from 'next';
 import { openConfirmModal } from '@mantine/modals';
 import { Button, Divider, Text, Accordion } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
