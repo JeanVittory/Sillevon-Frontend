@@ -148,28 +148,28 @@ export default function Chat({ user }: ChatProps) {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const token = context.req.cookies['sillusr'];
-	let userData;
-	try {
-		if (token) {
-			const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
-				method: 'GET',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				cache: 'no-store',
-			});
-			userData = await res.json();
-		} else {
-			userData = { data: 'Token has expired' };
-		}
-	} catch (e) {
-		console.log(e);
-	}
-	return {
-		props: {
-			user: userData.data,
-		},
-	};
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+// 	const token = context.req.cookies['sillusr'];
+// 	let userData;
+// 	try {
+// 		if (token) {
+// 			const res = await fetch(process.env.NEXT_PUBLIC_GET_UPDATE_DATAUSER as string, {
+// 				method: 'GET',
+// 				headers: {
+// 					Authorization: `Bearer ${token}`,
+// 				},
+// 				cache: 'no-store',
+// 			});
+// 			userData = await res.json();
+// 		} else {
+// 			userData = { data: 'Token has expired' };
+// 		}
+// 	} catch (e) {
+// 		console.log(e);
+// 	}
+// 	return {
+// 		props: {
+// 			user: userData.data,
+// 		},
+// 	};
+// };

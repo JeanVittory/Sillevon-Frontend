@@ -4,19 +4,22 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from '../../components/CheckoutForm';
 import styles from '../../styles/Payment.module.scss';
-import { GetServerSideProps } from 'next';
 import Cookies from 'js-cookie';
-
+import { useSearchParams } from 'next/navigation';
+import paymentService from './service/paymentsService';
 const stipeSecretKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string;
 const stripePromise = loadStripe(stipeSecretKey);
 
 type Appearance = { theme: 'stripe' | 'flat' };
 
-export default function Payment({ contracts }: any) {
+export default function Payment() {
 	const [clientSecret, setClientSecret] = useState('');
+	const searchParams = useSearchParams();
+	const name = searchParams.get('name');
 	const token = Cookies.get('sillusr');
 
 	useEffect(() => {
+		const contracts = paymentService(name!).then((response) => response);
 		fetch(process.env.NEXT_PUBLIC_POST_PAYMENT as string, {
 			method: 'POST',
 			headers: {
@@ -48,26 +51,3 @@ export default function Payment({ contracts }: any) {
 		</div>
 	);
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const token = context.req.cookies['sillusr'];
-	const { name } = context.query;
-	let contracts;
-	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_GET_BY_NAME}/${name}`, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-			cache: 'no-store',
-		});
-		contracts = await res.json();
-	} catch (e) {
-		contracts = { data: 'There are not contracts' };
-	}
-	return {
-		props: {
-			contracts: contracts.data,
-		},
-	};
-};

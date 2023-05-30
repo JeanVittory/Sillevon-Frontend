@@ -1,6 +1,5 @@
 'use client';
 
-import { GetServerSideProps } from 'next';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
