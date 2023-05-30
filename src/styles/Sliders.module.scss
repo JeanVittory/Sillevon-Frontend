@@ -1,0 +1,19 @@
+.sliders {
+	max-width: 40rem;
+	display: flex;
+	flex-direction: column;
+	gap: 2.5rem;
+	margin: 5rem auto;
+}
+.eachOneSlider {
+	height: 100%;
+	p {
+		margin: 0;
+	}
+}
+
+.genreAndInstrument {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}

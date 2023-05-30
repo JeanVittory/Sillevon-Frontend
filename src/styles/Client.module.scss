@@ -1,0 +1,24 @@
+.clientProfile {
+	height: 100vh;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.loaderContainer {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.posters {
+	width: 100%;
+	padding: 2rem;
+
+	@media screen and (min-width: '800px') {
+		width: 70%;
+	}
+}

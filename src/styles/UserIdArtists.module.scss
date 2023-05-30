@@ -1,0 +1,47 @@
+.userArtistsContainer {
+	margin: 0 auto;
+	margin-top: 6rem;
+	max-width: 1200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+
+	@media screen and (min-width: '700px') {
+		flex-direction: row;
+	}
+}
+.userCardInfo {
+	display: flex;
+	flex-direction: column;
+	@media screen and (min-width: '700px') {
+		order: 1;
+	}
+}
+.cardInfo {
+	margin-bottom: 2rem;
+}
+
+.userStatsAndMap {
+	margin: 0 auto;
+	@media screen and (min-width: '700px') {
+		margin: 0;
+		order: 3;
+	}
+}
+.userStats {
+	width: 14rem;
+}
+
+.allPosts {
+	padding: 0 0.5rem;
+	height: 100vh;
+	overflow-y: auto;
+	@media screen and (min-width: '700px') {
+		order: 2;
+	}
+}
+.userMap {
+	width: 20rem;
+	height: 20rem;
+	border-radius: 0.5rem;
+}

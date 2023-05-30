@@ -1,0 +1,38 @@
+.registerStepper {
+	max-width: 1200px;
+	padding: 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	margin: 0 auto;
+	margin-top: 6rem;
+	padding: 1rem 2rem;
+}
+.contentStepper {
+	height: 30rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.titleLastStep {
+	margin: 5rem 0 3rem 0;
+}
+
+.stepper {
+	margin-top: 2rem;
+}
+
+.tuneUpProfilePhotos {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.loaderContainer {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

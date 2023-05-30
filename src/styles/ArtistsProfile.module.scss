@@ -1,0 +1,43 @@
+.artistsProfileContainer {
+	margin: 0 auto;
+	margin-top: 6rem;
+	max-width: 1200px;
+	display: flex;
+	justify-content: space-around;
+	flex-direction: column;
+	@media screen and (min-width: '700px') {
+		flex-direction: row;
+	}
+}
+.userProfileCardInfo {
+	display: flex;
+	flex-direction: column;
+}
+
+.userProfileStats {
+	width: 100%;
+	@media screen and (min-width: '800px') {
+		width: 15rem;
+	}
+}
+.allProfilePosts {
+	padding: 0 0.5rem;
+	height: 100vh;
+	overflow-y: auto;
+}
+.userProfileMap {
+	width: 20rem;
+	height: 20rem;
+	border-radius: 0.5rem;
+}
+
+.postsContainerArtistProfile {
+	flex-grow: 1;
+}
+
+.loaderContainer {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+}

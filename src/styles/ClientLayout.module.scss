@@ -1,0 +1,15 @@
+.clientLayout {
+	overflow-y: hidden;
+	margin: 0 auto;
+	margin-top: 6rem;
+	position: sticky;
+	display: flex;
+	flex-direction: column;
+	@media screen and (min-width: 800px) {
+		flex-direction: row;
+	}
+}
+
+.sectionClientLayout {
+	width: 100%;
+}

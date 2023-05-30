@@ -1,38 +1,33 @@
 # Sillevon
 
-## Description
+This frontend pretend to provide musical services to artists who need spread his music with live
+shows and therefore need a platform to show his profiles and stay in contact with potential clients.
 
-We tranforms the way music has been brings to the scenaries. Choose
-your own band for any type of events. Have a bundle of profesional
-artists for any music purposal. If you are a musician, you can make so
-many contacts and enhace your visibility.
+## Technologies
 
-## Requirements
+## Tech
 
-To run this project in a local server you need to install some libraries and technologies
+- [Next](https://nextjs.org/) - Next.js enables you to create full-stack Web applications by
+  extending the latest React features, and integrating powerful Rust-based JavaScript tooling for
+  the fastest builds.
+- [Mantine](https://mantine.dev/) - Build fully functional accessible web applications faster than
+  ever – Mantine includes more than 100 customizable components and 50 hooks to cover you in any
+  situation
+- [Socket IO](https://socket.io/) - Bidirectional and low-latency communication for every platform
 
-- Node.js
+## Installation
 
-[In this link you can download it just in case you do not have it yet](https://nodejs.org/es/download/)
+It requires [Node.js](https://nodejs.org/) v16+ to run.
 
-## Setting
+Install the dependencies and devDependencies to start the server.
 
-To run de project you need to follow the steps below:
-
-1. Clone the GibHub project with the follow command:
-
-```
-git clone <repo link> <dir name>
-```
-
-2. Install the dependecies wit npm running the follow command
-
-```
-npm install
+```sh
+pnpm i
+pnpm run dev
 ```
 
-3. Run de project with the command below:
+## Environment Variables
 
-```
-npm run dev
-```
+There is a file called .env.example where you will find a series of variables to fill out with your
+credentials to make the application work. Please check your endpoints with the backend of the app
+[here](https://github.com/JeanVittory/Sillevon-Backend)
