@@ -4,13 +4,18 @@ import { useEffect, useState } from 'react';
 import { Center, Text } from '@mantine/core';
 import Posts from '../../../components/Posts';
 import UserStats from '../../../components/UserStats';
-import Map from '../../../components/Map';
 import { UserCardProfile } from '../../../components/UserCardProfile';
 import { Loader } from '../../../components/Loader';
 import { artistProfile } from './services/artistProfile';
 import { useAppDispatch } from '../../../hooks/redux';
 import { setAvatar } from '../../../slices/userSlice';
 import styles from '../../../styles/ArtistsProfile.module.scss';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('../../../components/Map'), {
+	loading: () => <div>Loading...</div>,
+	ssr: false,
+});
 
 export default function ArtistsProfile() {
 	const [user, setUser] = useState<any>();

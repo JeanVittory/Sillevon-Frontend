@@ -7,7 +7,12 @@ import { UserCard } from '../../../components/UserCard';
 import UserStats from '../../../components/UserStats';
 import styles from '../../../styles/UserIdArtists.module.scss';
 import Posts from '../../../components/Posts';
-import Map from '../../../components/Map';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('../../../components/Map'), {
+	loading: () => <div>Loading...</div>,
+	ssr: false,
+});
 
 export interface ArtistProfileClientProps {
 	user: {
