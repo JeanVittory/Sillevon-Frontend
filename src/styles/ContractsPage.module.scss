@@ -1,26 +1,34 @@
 .contractsContainer {
-  padding: 1rem;
-  max-width: 50rem;
+	padding: 1rem;
+	max-width: 50rem;
 }
 
 .headerContainers {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 .acordionContent {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 .artistList {
-  ul {
-    list-style: none;
-  }
+	ul {
+		list-style: none;
+	}
 }
 .infoContainerAcor {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.loader {
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
 }

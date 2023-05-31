@@ -27,7 +27,7 @@ export default function ContractsArtists() {
 
 	if (!user)
 		return (
-			<div>
+			<div className={styles.loader}>
 				<Loader />
 			</div>
 		);
