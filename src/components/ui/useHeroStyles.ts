@@ -8,7 +8,7 @@ export const useHeroStyles = createStyles((theme) => {
 	return {
 		hero: {
 			position: 'relative',
-			backgroundImage: 'url(HeroImg.jpg)',
+			backgroundImage: 'url(HeroImg.webp)',
 			backgroundSize: 'cover',
 			backgroundPosition: 'center',
 		},
