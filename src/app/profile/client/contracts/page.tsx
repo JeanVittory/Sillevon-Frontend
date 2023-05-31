@@ -7,7 +7,7 @@ import { Button, Divider, Text, Accordion } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconBug } from '@tabler/icons-react';
 import Cookies from 'js-cookie';
-import Layout from '../../../../components/Layout';
+import { Loader } from '../../../../components/Loader';
 import ClientLayout from '../../../../components/ClientLayout';
 import { ConnectionsProps } from '../connections/page';
 import { deleteContract } from '../../../../lib/contracts';
@@ -90,7 +90,12 @@ export default function Contracts() {
 			},
 		});
 
-	if (!user) return <div></div>;
+	if (!user)
+		return (
+			<div className={styles.loader}>
+				<Loader />
+			</div>
+		);
 
 	return (
 		<ClientLayout>

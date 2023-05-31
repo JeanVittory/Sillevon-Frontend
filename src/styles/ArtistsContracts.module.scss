@@ -4,7 +4,16 @@
 	max-width: 50rem;
 	padding: 4rem;
 }
+
 .infoContract {
 	display: flex;
 	justify-content: space-between;
+}
+
+.loader {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
