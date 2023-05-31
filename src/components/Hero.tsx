@@ -23,6 +23,7 @@ const Hero: NextPage = () => {
 					you can make so many contacts and enhace your visibility.
 				</Text>
 				<Button
+				  aria-label='Get started'
 					onClick={() => router.push('/pricing')}
 					variant='gradient'
 					size='xl'

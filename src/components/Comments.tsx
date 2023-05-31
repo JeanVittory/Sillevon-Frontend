@@ -131,7 +131,7 @@ export default function Comments({ comments, setComment, postId, closeAllModals 
 				label='Leave a comment'
 				placeholder='Your comment'
 			/>
-			<Button fullWidth onClick={handleModalClick} mt='md'>
+			<Button aria-label='Send' fullWidth onClick={handleModalClick} mt='md'>
 				Send
 			</Button>
 		</>

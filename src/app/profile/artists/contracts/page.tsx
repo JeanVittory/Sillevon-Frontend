@@ -34,7 +34,7 @@ export default function ContractsArtists() {
 
 	return (
 		<div className={styles.artistsContractsContainer}>
-			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')}>
+			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')} aria-label='left'>
 				<IconChevronLeft size={40} />
 			</UnstyledButton>
 			<Text
@@ -64,6 +64,7 @@ export default function ContractsArtists() {
 										</Text>
 										<Text>Rehearsals: {contract.rehearsalSchedule.length}</Text>
 										<Button
+											aria-label='Accept contract'
 											onClick={async () => {
 												try {
 													await acceptContract(contract._id, {

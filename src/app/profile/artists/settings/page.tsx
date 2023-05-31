@@ -168,7 +168,7 @@ export default function Settings() {
 	}
 	return (
 		<div className={styles.Container}>
-			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')}>
+			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')} aria-label='left'>
 				<IconChevronLeft size={40} />
 			</UnstyledButton>
 			<Text
@@ -188,7 +188,7 @@ export default function Settings() {
 					{!updatedImage ? (
 						<FileInput placeholder='Change your avatar' onChange={handleChange} variant='unstyled' />
 					) : (
-						<Button variant='subtle' onClick={handleAvatarSave}>
+						<Button variant='subtle' onClick={handleAvatarSave} aria-label='save'>
 							Save
 						</Button>
 					)}
@@ -202,6 +202,7 @@ export default function Settings() {
 						onChange={(e) => setName((prev) => ({ ...prev, value: e.target.value }))}
 					/>
 					<Button
+						aria-label='edit name'
 						variant='subtle'
 						onClick={() => {
 							if (name.isDisabled) {
@@ -215,6 +216,7 @@ export default function Settings() {
 					</Button>
 					{!name.isDisabled && (
 						<Button
+							aria-label='cancel'
 							variant='light'
 							color='red'
 							radius='lg'
@@ -278,6 +280,7 @@ export default function Settings() {
 					</Button>
 					{!password.isDisabled && (
 						<Button
+							aria-label='cancel'
 							variant='light'
 							color='red'
 							radius='lg'

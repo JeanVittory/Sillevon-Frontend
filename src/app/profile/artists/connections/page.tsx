@@ -208,7 +208,7 @@ export default function ConnectionClient() {
 
 	return (
 		<div className={styles.connectionArtistsContainer}>
-			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')}>
+			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')} aria-label='left'>
 				<IconChevronLeft size={20} />
 			</UnstyledButton>
 			<Text

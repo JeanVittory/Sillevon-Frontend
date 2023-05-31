@@ -112,7 +112,9 @@ export default function Contracts() {
 					>
 						Contracts
 					</Text>
-					<Button onClick={() => router.push('/stepper-contract')}>New contract</Button>
+					<Button aria-label='New contract' onClick={() => router.push('/stepper-contract')}>
+						New contract
+					</Button>
 				</div>
 				<Divider mt={20} mb={20} />
 				<div>
@@ -147,9 +149,12 @@ export default function Contracts() {
 												<div className={styles.infoContainerAcor}>
 													<Text>Total price: ${currentContracts[0].price}</Text>
 													{!isPaid && process === 'ReadyToPay' ? (
-														<Button onClick={() => router.push(`/payment?name=${item}`)}>Go to pay</Button>
+														<Button aria-label='Go To pay' onClick={() => router.push(`/payment?name=${item}`)}>
+															Go to pay
+														</Button>
 													) : null}
 													<Button
+														aria-label='delete'
 														mt={10}
 														color='red'
 														variant='outline'

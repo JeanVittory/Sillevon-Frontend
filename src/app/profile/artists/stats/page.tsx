@@ -67,7 +67,7 @@ export default function Stats() {
 
 	return (
 		<div className={styles.statsContainer}>
-			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')}>
+			<UnstyledButton mb={20} onClick={() => router.push('/profile/artists')} aria-label='left'>
 				<IconChevronLeft size={40} />
 			</UnstyledButton>
 			<Text

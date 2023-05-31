@@ -169,6 +169,7 @@ const Login = ({ closeAllModals }: LoginProps) => {
 
 			<Group grow mb='md' mt='md'>
 				<Button
+					aria-label='Google'
 					onClick={() => {
 						loginWithPopup();
 						Cookies.set('trigger', 'ok');
@@ -178,6 +179,7 @@ const Login = ({ closeAllModals }: LoginProps) => {
 					<span>Goolge</span>
 				</Button>
 				<Button
+					aria-label='Twitter'
 					onClick={() => {
 						loginWithPopup();
 						Cookies.set('trigger', 'ok');
@@ -237,7 +239,9 @@ const Login = ({ closeAllModals }: LoginProps) => {
 					<Anchor component='button' type='button' color='dimmed' onClick={() => toggle()} size='xs'>
 						{type === 'register' ? 'Already have an account? Login' : "Don't have an account? Register"}
 					</Anchor>
-					<Button type='submit'>{isLoading ? <Loader /> : upperFirst(type)}</Button>
+					<Button aria-label='submit' type='submit'>
+						{isLoading ? <Loader /> : upperFirst(type)}
+					</Button>
 				</Group>
 			</form>
 		</Paper>

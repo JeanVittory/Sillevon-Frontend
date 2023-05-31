@@ -133,6 +133,7 @@ const HeaderNav: NextPage = () => {
 						/>
 						{auth ? (
 							<Button
+								aria-label='Login'
 								variant='default'
 								onClick={() => {
 									openModal({
@@ -158,7 +159,12 @@ const HeaderNav: NextPage = () => {
 							</ActionIcon>
 						)}
 					</Group>
-					<Burger opened={drawerOpened} onClick={toggleDrawer} className={classes.hiddenDesktop} />
+					<Burger
+						aria-label='Menu'
+						opened={drawerOpened}
+						onClick={toggleDrawer}
+						className={classes.hiddenDesktop}
+					/>
 				</Group>
 			</Header>
 			<Drawer
@@ -192,6 +198,7 @@ const HeaderNav: NextPage = () => {
 						/>
 						{auth ? (
 							<Button
+								aria-label='Login'
 								variant='default'
 								onClick={() => {
 									openModal({
