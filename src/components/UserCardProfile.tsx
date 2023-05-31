@@ -146,7 +146,7 @@ export function UserCardProfile({ setReFetch }: UserCardProfileProps) {
 						Cookies.remove('name');
 						Cookies.remove('avatar');
 						Cookies.remove('background');
-						window.location.assign('/');
+						window.location.assign(process.env.NEXT_PUBLIC_URL as string);
 					}}
 				>
 					<IconLogout className={classes.linkIcon} stroke={1.5} />
