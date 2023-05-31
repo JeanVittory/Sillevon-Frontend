@@ -37,7 +37,9 @@
 	height: 100vh;
 	overflow-y: auto;
 	@media screen and (min-width: '700px') {
+		padding: 0 2rem;
 		order: 2;
+		flex-grow: 2;
 	}
 }
 .userMap {
