@@ -238,7 +238,7 @@ const Artists = () => {
 			<div className={styles.carousel}>
 				<div className={styles.carouselNav}>
 					{!isHidde ? <p>Artists recomended</p> : <p>List of artists</p>}
-					<Button variant='subtle' onClick={() => setIsHidde((prev) => !prev)}>
+					<Button aria-label='Artists' variant='subtle' onClick={() => setIsHidde((prev) => !prev)}>
 						{isHidde ? 'Show' : 'Hide'}
 					</Button>
 				</div>

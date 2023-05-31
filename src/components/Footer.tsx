@@ -63,13 +63,13 @@ const Footer: NextPage<FooterLinksProps> = ({ data }) => {
 					© 2022 sillevon All rights reserved.
 				</Text>
 				<Group spacing={0} className={classes.social} position='right' noWrap>
-					<ActionIcon size='lg'>
+					<ActionIcon size='lg' aria-label='Twitter'>
 						<IconBrandTwitter size={18} stroke={1.5} />
 					</ActionIcon>
-					<ActionIcon size='lg'>
+					<ActionIcon size='lg' aria-label='Youtube'>
 						<IconBrandYoutube size={18} stroke={1.5} />
 					</ActionIcon>
-					<ActionIcon size='lg'>
+					<ActionIcon size='lg' aria-label='Instagram'>
 						<IconBrandInstagram size={18} stroke={1.5} />
 					</ActionIcon>
 				</Group>

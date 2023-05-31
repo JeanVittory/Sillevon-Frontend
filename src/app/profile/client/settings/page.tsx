@@ -173,7 +173,7 @@ export default function Settings() {
 					{!updatedImage ? (
 						<FileInput placeholder='Change your avatar' onChange={handleChange} variant='unstyled' />
 					) : (
-						<Button variant='subtle' onClick={handleAvatarSave}>
+						<Button aria-label='save' variant='subtle' onClick={handleAvatarSave}>
 							Save
 						</Button>
 					)}
@@ -187,6 +187,7 @@ export default function Settings() {
 						onChange={(e) => setName((prev) => ({ ...prev, value: e.target.value }))}
 					/>
 					<Button
+						aria-label='updater'
 						variant='subtle'
 						onClick={() => {
 							if (name.isDisabled) {
@@ -200,6 +201,7 @@ export default function Settings() {
 					</Button>
 					{!name.isDisabled && (
 						<Button
+							aria-label='cancel'
 							variant='light'
 							color='red'
 							radius='lg'
@@ -263,6 +265,7 @@ export default function Settings() {
 					</Button>
 					{!password.isDisabled && (
 						<Button
+							aria-label='cancel'
 							variant='light'
 							color='red'
 							radius='lg'
